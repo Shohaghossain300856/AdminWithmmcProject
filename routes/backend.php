@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\FundController;
 use App\Http\Controllers\Backend\CatagoriesController;
 use App\Http\Controllers\Backend\SubCatagoriesController;
 use App\Http\Controllers\Backend\SubCatagoriesListController;
+use App\Http\Controllers\Backend\StockController;
 use App\Http\Controllers\PdfController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,11 +58,10 @@ Route::middleware(['auth','checkUserStatus'])->group(function () {
       Route::resource('catagories', CatagoriesController::class);
       Route::resource('subCatagories', SubCatagoriesController::class);
       Route::resource('sub-Catagories-list', SubCatagoriesListController::class);
+      Route::resource('stock-create', StockController::class);
 
 
-Route::get('/subcategoriespdf/{id}/{fund_id}/{categorie_id}',[PdfController::class, 'Subcategoriespdf'])->name('subcategoriespdf');
-
-Route::get('/subcategoriesAllPdf', [PdfController::class, 'SubcategoriespdfList'])->name('subcategoriesAllPdf');
+Route::get('/subcategoriespdf', [PdfController::class, 'Subcategoriespdf'])->name('subcategoriespdf');
 
 
 });

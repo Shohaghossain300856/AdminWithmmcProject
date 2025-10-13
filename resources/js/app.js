@@ -4,6 +4,7 @@ import Fund from "./components/Backend/Fund/Index.vue";
 import catagories from "./components/Backend/Catagories/Index.vue";
 import subcategories from "./components/Backend/subCategories/Index.vue";
 import subcategorieslist from "./components/Backend/subCategories/List.vue";
+import stockcreate from "./components/Backend/Stock/create.vue";
 import http from "./lib/http";
 
 // loader
@@ -27,6 +28,7 @@ app.component("fund", Fund);
 app.component("catagories", catagories);
 app.component("subcategories", subcategories);
 app.component("subcategorieslist", subcategorieslist);
+app.component("stockcreate", stockcreate);
 
 app.use(Toast, {
   position: "top-right",

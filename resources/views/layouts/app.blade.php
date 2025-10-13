@@ -46,6 +46,7 @@ $baseurl = url('/');
 <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
 <script src="{{$baseurl}}/backend/js/config.js"></script>
 <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+<script defer src="https://unpkg.com/alpinejs"></script>
 </head>
 
 <body>
@@ -55,7 +56,9 @@ $baseurl = url('/');
 <div class="authentication-wrapper authentication-basic container-p-y">
     <div class="authentication-inner py-4">
 
-        @yield('content')
+   <div id="app"> 
+    @yield('content')
+  </div>
 
     </div>
 </div>
@@ -71,7 +74,6 @@ $baseurl = url('/');
 <!-- alert js -->
 <script src="{{$baseurl.'/backend/vendor/libs/sweetalert2/sweetalert2.js'}}"></script>
 <script src="{{$baseurl.'/backend/js/extended-ui-sweetalert2.js'}}"></script>
-<script src="{{ mix('js/app.js') }}"></script>
 
 <!-- alert fire -->
   @if(session()->has('success'))
@@ -124,5 +126,6 @@ $baseurl = url('/');
           });
       </script>
   @endif
+    <script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>

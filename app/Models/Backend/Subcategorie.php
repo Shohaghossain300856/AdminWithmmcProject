@@ -11,12 +11,12 @@ class Subcategorie extends Model
 {
     use HasFactory;
 
-      protected $fillable = [
-        'memo_no','date','fund_id','categorie_id',
-        'total_budget','total_pending','total_balance',
-        'sn','budget','revised','disbursement','withdrawal',
-        'total','expense_pending','actual_expense','balance','rate',
-    ];
+protected $fillable = [
+    'fund_id',
+    'categorie_id',
+    'sub_category',
+    'sub_category_code',
+];
 
     public function fund()
     {
