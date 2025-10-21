@@ -13,6 +13,7 @@
       "logo": "angular",
       "course": "Basics of Problem Solving Techniques"
     },
+
     {
       "id": 2,
       "user": "Maybelle Zmitrovich",
@@ -26,6 +27,7 @@
       "logo": "figma",
       "course": "UI/UX Design"
     },
+
     {
       "id": 3,
       "user": "Gertie Langwade",
@@ -39,6 +41,7 @@
       "logo": "react",
       "course": "React Native"
     },
+    
     {
       "id": 4,
       "user": "Estella Chace",

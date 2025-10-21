@@ -229,15 +229,3 @@
 </div>
 </li>
 </ul>
-
-<!-- side bar dropdoen code kaj korar jonno ata code usekorci -->
-<script>
-  document.addEventListener('click', function(e) {
-    const link = e.target.closest('.menu-link.menu-toggle, .menu-toggle')
-    if (!link) return
-      e.preventDefault()
-    const li = link.closest('.menu-item')
-    if (!li) return
-      li.classList.toggle('open')
-  })
-</script>
