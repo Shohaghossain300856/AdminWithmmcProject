@@ -167,7 +167,6 @@ public function show($id)
         'stocks.product.subcategory', 
         'stocks.validity',            
     ])->findOrFail($id);
-
     return view('backend.Stock.stock_details', compact('stock'));
 }
 

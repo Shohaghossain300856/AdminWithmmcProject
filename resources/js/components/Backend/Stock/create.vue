@@ -19,11 +19,7 @@
             <label class="p_label"><i class="fa fa-hashtag me-1"></i> Memo No</label>
             <div class="p_input-group">
               <span class="p_input-icon"><i class="fa fa-receipt"></i></span>
-              <input
-                class="form-control p_input"
-                v-model.trim="memo_no"
-                placeholder="Enter memo no (optional)"
-              />
+              <input class="form-control p_input" v-model.trim="memo_no" placeholder="Enter memo no (optional)" />
             </div>
           </div>
 
@@ -97,9 +93,7 @@
       <!-- Products table -->
       <div class="card mt-3">
         <div class="card-header d-flex align-items-center justify-content-between">
-          <h6 class="mb-0">
-            <i class="fa fa-layer-group me-2"></i> Products in this Subcategory
-          </h6>
+          <h6 class="mb-0"><i class="fa fa-layer-group me-2"></i> Products in this Subcategory</h6>
           <span class="badge bg-info">{{ productsInSelectedSubcat.length }} Items</span>
         </div>
 
@@ -139,7 +133,7 @@
                     />
                   </td>
 
-                  <!-- One pair of dates; will be mapped to warranty OR validity based on type -->
+                  <!-- One pair of dates; map later by type -->
                   <td><input type="date" class="form-control" v-model="rs(p.id).warranty_start" /></td>
                   <td><input type="date" class="form-control" v-model="rs(p.id).warranty_end" /></td>
                 </tr>
@@ -160,21 +154,120 @@
         </button>
       </div>
     </div>
+
+    <!-- ========================= -->
+    <!-- Stock Entry & Invoice List -->
+    <!-- ========================= -->
+    <div class="card mt-4">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5 class="mb-0">
+          <i class="fa fa-database me-2"></i> Stock Entry & Invoice Records
+        </h5>
+
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge bg-primary">{{ totalFiltered }}</span>
+
+          <div class="input-group input-group-sm w-auto">
+            <span class="input-group-text"><i class="fa fa-search"></i></span>
+            <input
+              v-model.trim="search"
+              class="form-control"
+              placeholder="Search memo / fund / date / product"
+            />
+          </div>
+
+          <button class="btn btn-sm btn-outline-primary" @click="refreshList" :disabled="loadingList">
+            <i :class="['fa', loadingList ? 'fa-spinner fa-spin' : 'fa-rotate']"></i>
+            <span class="ms-1">Refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-datatable text-nowrap">
+        <div class="table-scroll">
+          <table class="table table-hover align-middle mb-0 subcat-table">
+            <thead class="table-head">
+              <tr style="background:#7367f0;">
+                <th style="width:70px; color: white;">Sl</th>
+                <th style="color: white;">Memo No</th>
+                <th style="color: white;">Fund</th>
+                <th style="color: white;">Date</th>
+                <th style="width:120px; color: white;" class="text-end">Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr v-for="(row, i) in pagedRows" :key="row?.id">
+                <td>{{ (page - 1) * perPage + i + 1 }}</td>
+
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="fw-medium">{{ row?.memo_no ?? '—' }}</span>
+                    <small class="text-muted">
+                      ({{ Array.isArray(row?.stocks) ? row.stocks.length : (row?.product ? 1 : 0) }})
+                    </small>
+                  </div>
+                </td>
+
+                <td>{{ row?.fund?.fund ?? '—' }}</td>
+
+                <td>
+                  {{ row?.date ? formatDate(row.date) : '' }}
+                </td>
+
+                <td class="text-end">
+                  <a class="btn btn-sm btn-primary" :href="`/backend/stock-show/${row.id}`" title="View">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                </td>
+              </tr>
+
+              <tr v-if="!pagedRows.length">
+                <td colspan="5" class="text-center py-4">No records found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card-footer d-flex align-items-center justify-content-between">
+        <div class="text-muted small">
+          Showing {{ startRecord }}–{{ endRecord }} of {{ totalFiltered }} records
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <select class="form-select form-select-sm w-auto" v-model.number="perPage">
+            <option :value="10">10 / page</option>
+            <option :value="25">25 / page</option>
+            <option :value="50">50 / page</option>
+            <option :value="100">100 / page</option>
+          </select>
+
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary" :disabled="page<=1" @click="page--">
+              <i class="fa fa-chevron-left"></i>
+            </button>
+            <button class="btn btn-outline-secondary" :disabled="page>=totalPages" @click="page++">
+              <i class="fa fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /Stock Entry & Invoice List -->
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, getCurrentInstance, computed } from 'vue'
+import { ref, onMounted, getCurrentInstance, computed, watch } from 'vue'
 import { useToast } from 'vue-toastification'
 import Multiselect from '@vueform/multiselect'
 import '@vueform/multiselect/themes/default.css'
 
-/* essentials */
 const { appContext } = getCurrentInstance()
 const http = appContext.config.globalProperties.$http
 const toast = useToast()
 
-/* state */
 const submitting = ref(false)
 const submitTried = ref(false)
 
@@ -182,6 +275,9 @@ const date = ref('')
 const memo_no = ref('')
 
 const products = ref([])
+const productlist = ref([])
+const loadingList = ref(false)
+
 const subCatagories = ref([])
 const funds = ref([])
 const suppliers = ref([])
@@ -204,7 +300,6 @@ function rs (pid) {
   return rowState.value[pid]
 }
 
-/* helpers */
 function productTypeById (pid) {
   const prod = (products.value || []).find(p => String(p.id) === String(pid))
   return Number(prod?.type || 0)
@@ -230,7 +325,6 @@ const productsInSelectedSubcat = computed(() => {
   return (products.value || []).filter(p => String(p.subCatagorie_id) === String(subCatagorie_id.value))
 })
 
-/* qty > 0 check */
 const hasAnyQty = computed(() =>
   Object.values(rowState.value).some(r => Number(r.qty) > 0)
 )
@@ -239,7 +333,6 @@ const canSubmit = computed(() =>
   !!fund_id.value && !!supplier_id.value && !!date.value && hasAnyQty.value && !submitting.value
 )
 
-/* submit: payload matches your store() validator 1:1, with type-based mapping */
 async function submitStock () {
   submitTried.value = true
   if (!canSubmit.value) return toast.error('Please fill required fields and set qty for at least one product.')
@@ -285,6 +378,7 @@ async function submitStock () {
 
     memo_no.value = ''
     rowState.value = {}
+    await refreshList()
   } catch (e) {
     console.error(e)
     toast.error(e?.message || 'Failed to save stock')
@@ -293,7 +387,65 @@ async function submitStock () {
   }
 }
 
-/* API */
+const search = ref('')
+const page = ref(1)
+const perPage = ref(25)
+
+const normalizedList = computed(() => {
+  return (productlist.value || []).map(r => ({
+    ...r,
+    memo_no: r?.memo_no ?? '',
+    date: r?.date ?? '',
+    fund: r?.fund ?? null,
+    product: r?.product ?? null,
+    stocks: Array.isArray(r?.stocks) ? r.stocks : (r?.stocks ? [r.stocks] : [])
+  }))
+})
+
+const filteredRows = computed(() => {
+  const q = search.value.toLowerCase()
+  if (!q) return normalizedList.value
+
+  return normalizedList.value.filter(r => {
+    const memo = r.memo_no.toLowerCase()
+    const fundName = String(r?.fund?.fund ?? '').toLowerCase()
+    const dateStr = String(r?.date ?? '').toLowerCase()
+    const productName =
+      String(r?.product?.product ?? r?.product?.name ?? r?.product?.Product ?? '').toLowerCase()
+
+    return (
+      memo.includes(q) ||
+      fundName.includes(q) ||
+      dateStr.includes(q) ||
+      productName.includes(q)
+    )
+  })
+})
+
+const totalFiltered = computed(() => filteredRows.value.length)
+const totalPages = computed(() => Math.max(1, Math.ceil(totalFiltered.value / perPage.value)))
+
+const pagedRows = computed(() => {
+  const start = (page.value - 1) * perPage.value
+  return filteredRows.value.slice(start, start + perPage.value)
+})
+
+const startRecord = computed(() => (totalFiltered.value ? (page.value - 1) * perPage.value + 1 : 0))
+const endRecord = computed(() => Math.min(page.value * perPage.value, totalFiltered.value))
+
+watch([search, perPage, totalFiltered], () => {
+  if (page.value > totalPages.value) page.value = 1
+})
+
+function formatDate(d) {
+  try {
+    return new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      .format(new Date(d))
+  } catch {
+    return d ?? ''
+  }
+}
+
 async function fetchProducts () {
   try {
     const res = await http.get('/product/create')
@@ -317,19 +469,36 @@ async function fetchFunds () {
 
 async function fetchSuppliers () {
   try {
-    const { data } = await http.get('/Supplier/create') // capital S as per your route
+    const { data } = await http.get('/Supplier/create')
     suppliers.value = Array.isArray(data?.data) ? data.data : (Array.isArray(data?.suppliers) ? data.suppliers : data)
   } catch (e) { console.error(e); suppliers.value = []; toast.error('Failed to load suppliers') }
 }
 
-/* lifecycle */
+async function fetchInvoiceWiseProduct () {
+  try {
+    loadingList.value = true
+    const res = await http.get('/stock-list/create')
+    productlist.value = res?.data?.data ?? res?.data ?? []
+  } catch (e) {
+    console.error(e)
+    toast.error('Failed to load stock entries')
+  } finally {
+    loadingList.value = false
+  }
+}
+
+async function refreshList () {
+  await fetchInvoiceWiseProduct()
+}
 onMounted(() => {
   const today = new Date().toISOString().split('T')[0]
   if (!date.value) date.value = today
+
   fetchProducts()
   fetchSubcats()
   fetchFunds()
   fetchSuppliers()
+  fetchInvoiceWiseProduct()
 })
 </script>
 
@@ -362,44 +531,32 @@ onMounted(() => {
   border-color:#7367f0; box-shadow:0 0 0 3px rgba(115,103,240,.12);
 }
 
-/* Make Multiselect look like the above inputs */
+/* Multiselect look */
 :deep(.p_like-input .multiselect) {
   min-height:40px; border-radius:10px; border:1px solid #e5e7eb; background:#fff;
-  padding-left:26px; /* since we already have left 36px on the wrapper, multiselect inner needs some space */
+  padding-left:26px;
 }
 :deep(.p_like-input .multiselect.is-active) {
   border-color:#7367f0; box-shadow:0 0 0 3px rgba(115,103,240,.12);
 }
-:deep(.p_like-input .multiselect-search) {
-  height:38px;
-}
+:deep(.p_like-input .multiselect-search) { height:38px; }
 :deep(.p_like-input .multiselect-single-label),
-:deep(.p_like-input .multiselect-placeholder) {
-  padding-left:10px;
-}
+:deep(.p_like-input .multiselect-placeholder) { padding-left:10px; }
 
-/* Older selector kept for safety with your existing class */
+/* Older selector compatibility */
 :deep(.p_ms .multiselect) { min-height:40px; border-radius:10px; border:1px solid #e5e7eb; background:#fff; }
 :deep(.p_ms .multiselect:focus-within) { border-color:#7367f0; box-shadow:0 0 0 3px rgba(115,103,240,.12); }
 :deep(.p_ms .multiselect-input) { padding-left:34px; }
 
-/* Table */
-.table-scroll { overflow-x:auto; max-width:100%; }
-.table thead th { position:sticky; top:0; z-index:1; }
+/* Table header */
+.p_thead { background:#7367f0 !important; }
+.p_thead th { color:#fff !important; border-color:#7367f0 !important; }
 
-/* Force header bg + white text reliably */
-.p_thead {
-  background:#7367f0 !important;
-}
-.p_thead th {
-  color:#fff !important;
-  border-color:#7367f0 !important;
-}
-
-/* Cells */
-.table td input.form-control { height: 38px; }
-
-/* Badges */
-.badge { font-size:.75rem; padding:.35em .65em; }
 .bg-label-primary { background-color:#e7e7ff; color:#7367f0; }
+
+.table-scroll { overflow-x: auto; max-width: 100%; }
+.table thead th { color: #fff; position: sticky; top: 0; z-index: 1; }
+.table-head { background: #7367f0; color: #fff; }
+.input-group .form-control { min-width: 260px; }
+.badge { font-weight: 600; }
 </style>

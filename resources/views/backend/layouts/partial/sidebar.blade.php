@@ -20,7 +20,6 @@
   || Route::currentRouteNamed('subCatagories.index') 
   || Route::currentRouteNamed('sub-Catagories-list.index')
   || Route::currentRouteNamed('product.index')
-  || Route::currentRouteNamed('stock-list.index')
   || Route::currentRouteNamed('Supplier.index') ? 'active open' : '' }}">
   
   <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -102,7 +101,7 @@
     <li class="menu-item {{ Route::currentRouteNamed('stock-create.index') ? 'active' : '' }}">
       <a href="{{ route('stock-create.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-smart-home"></i>
-        <div data-i18n="Stock Create">Stock</div>
+        <div data-i18n="Stock Create">Add Stock</div>
       </a>
     </li>
     @endcan  
@@ -110,7 +109,7 @@
     <li class="menu-item {{ Route::currentRouteNamed('stock-list.index') ? 'active' : '' }}">
       <a href="{{ route('stock-list.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-smart-home"></i>
-        <div data-i18n="Stock Create">Stock List</div>
+        <div data-i18n="Stock Create">Stock Records</div>
       </a>
     </li>
     @endcan

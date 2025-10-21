@@ -26429,7 +26429,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\r\n/* Card + header */\n.p_filters-card[data-v-d353428a] {\r\n  border:1px solid #e0e7ff; border-radius:16px; padding:16px; background:#fff;\r\n  box-shadow:0 4px 12px rgba(0,0,0,.05);\n}\n.p_filters-header[data-v-d353428a] {\r\n  display:flex; align-items:center; justify-content:space-between;\r\n  padding-bottom:12px; border-bottom:1px dashed #cbd5e1; margin-bottom:14px;\n}\n.p_memo-section[data-v-d353428a] { border-radius:14px; padding:16px; margin-bottom:16px;\n}\r\n\r\n/* Labels */\n.p_label[data-v-d353428a] { font-weight:700; color:#1e293b; margin-bottom:6px; display:block;\n}\r\n\r\n/* Input group (shared look) */\n.p_input-group[data-v-d353428a] { position:relative;\n}\n.p_input-group .p_input-icon[data-v-d353428a] {\r\n  position:absolute; top:50%; left:10px; transform:translateY(-50%);\r\n  pointer-events:none; opacity:.65; font-size:14px;\n}\n.p_input-group .p_input[data-v-d353428a], .p_input-group .form-control[data-v-d353428a] {\r\n  padding-left:36px; height:44px; border:1px solid #e5e7eb; background:#fff;\r\n  transition: box-shadow .15s, border-color .15s;\n}\n.p_input-group .p_input[data-v-d353428a]:focus, .p_input-group .form-control[data-v-d353428a]:focus {\r\n  border-color:#7367f0; box-shadow:0 0 0 3px rgba(115,103,240,.12);\n}\r\n\r\n/* Make Multiselect look like the above inputs */\n[data-v-d353428a] .p_like-input .multiselect {\r\n  min-height:40px; border-radius:10px; border:1px solid #e5e7eb; background:#fff;\r\n  padding-left:26px; /* since we already have left 36px on the wrapper, multiselect inner needs some space */\n}\n[data-v-d353428a] .p_like-input .multiselect.is-active {\r\n  border-color:#7367f0; box-shadow:0 0 0 3px rgba(115,103,240,.12);\n}\n[data-v-d353428a] .p_like-input .multiselect-search {\r\n  height:38px;\n}\n[data-v-d353428a] .p_like-input .multiselect-single-label,[data-v-d353428a] .p_like-input .multiselect-placeholder {\r\n  padding-left:10px;\n}\r\n\r\n/* Older selector kept for safety with your existing class */\n[data-v-d353428a] .p_ms .multiselect { min-height:40px; border-radius:10px; border:1px solid #e5e7eb; background:#fff;\n}\n[data-v-d353428a] .p_ms .multiselect:focus-within { border-color:#7367f0; box-shadow:0 0 0 3px rgba(115,103,240,.12);\n}\n[data-v-d353428a] .p_ms .multiselect-input { padding-left:34px;\n}\r\n\r\n/* Table */\n.table-scroll[data-v-d353428a] { overflow-x:auto; max-width:100%;\n}\n.table thead th[data-v-d353428a] { position:sticky; top:0; z-index:1;\n}\r\n\r\n/* Force header bg + white text reliably */\n.p_thead[data-v-d353428a] {\r\n  background:#7367f0 !important;\n}\n.p_thead th[data-v-d353428a] {\r\n  color:#fff !important;\r\n  border-color:#7367f0 !important;\n}\r\n\r\n/* Cells */\n.table td input.form-control[data-v-d353428a] { height: 38px;\n}\r\n\r\n/* Badges */\n.badge[data-v-d353428a] { font-size:.75rem; padding:.35em .65em;\n}\n.bg-label-primary[data-v-d353428a] { background-color:#e7e7ff; color:#7367f0;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\r\n/* Card + header */\n.p_filters-card[data-v-d353428a] {\r\n  border:1px solid #e0e7ff; border-radius:16px; padding:16px; background:#fff;\r\n  box-shadow:0 4px 12px rgba(0,0,0,.05);\n}\n.p_filters-header[data-v-d353428a] {\r\n  display:flex; align-items:center; justify-content:space-between;\r\n  padding-bottom:12px; border-bottom:1px dashed #cbd5e1; margin-bottom:14px;\n}\n.p_memo-section[data-v-d353428a] { border-radius:14px; padding:16px; margin-bottom:16px;\n}\r\n\r\n/* Labels */\n.p_label[data-v-d353428a] { font-weight:700; color:#1e293b; margin-bottom:6px; display:block;\n}\r\n\r\n/* Input group (shared look) */\n.p_input-group[data-v-d353428a] { position:relative;\n}\n.p_input-group .p_input-icon[data-v-d353428a] {\r\n  position:absolute; top:50%; left:10px; transform:translateY(-50%);\r\n  pointer-events:none; opacity:.65; font-size:14px;\n}\n.p_input-group .p_input[data-v-d353428a], .p_input-group .form-control[data-v-d353428a] {\r\n  padding-left:36px; height:44px; border:1px solid #e5e7eb; background:#fff;\r\n  transition: box-shadow .15s, border-color .15s;\n}\n.p_input-group .p_input[data-v-d353428a]:focus, .p_input-group .form-control[data-v-d353428a]:focus {\r\n  border-color:#7367f0; box-shadow:0 0 0 3px rgba(115,103,240,.12);\n}\r\n\r\n/* Multiselect look */\n[data-v-d353428a] .p_like-input .multiselect {\r\n  min-height:40px; border-radius:10px; border:1px solid #e5e7eb; background:#fff;\r\n  padding-left:26px;\n}\n[data-v-d353428a] .p_like-input .multiselect.is-active {\r\n  border-color:#7367f0; box-shadow:0 0 0 3px rgba(115,103,240,.12);\n}\n[data-v-d353428a] .p_like-input .multiselect-search { height:38px;\n}\n[data-v-d353428a] .p_like-input .multiselect-single-label,[data-v-d353428a] .p_like-input .multiselect-placeholder { padding-left:10px;\n}\r\n\r\n/* Older selector compatibility */\n[data-v-d353428a] .p_ms .multiselect { min-height:40px; border-radius:10px; border:1px solid #e5e7eb; background:#fff;\n}\n[data-v-d353428a] .p_ms .multiselect:focus-within { border-color:#7367f0; box-shadow:0 0 0 3px rgba(115,103,240,.12);\n}\n[data-v-d353428a] .p_ms .multiselect-input { padding-left:34px;\n}\r\n\r\n/* Table header */\n.p_thead[data-v-d353428a] { background:#7367f0 !important;\n}\n.p_thead th[data-v-d353428a] { color:#fff !important; border-color:#7367f0 !important;\n}\n.bg-label-primary[data-v-d353428a] { background-color:#e7e7ff; color:#7367f0;\n}\n.table-scroll[data-v-d353428a] { overflow-x: auto; max-width: 100%;\n}\n.table thead th[data-v-d353428a] { color: #fff; position: sticky; top: 0; z-index: 1;\n}\n.table-head[data-v-d353428a] { background: #7367f0; color: #fff;\n}\n.input-group .form-control[data-v-d353428a] { min-width: 260px;\n}\n.badge[data-v-d353428a] { font-weight: 600;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -39063,6 +39063,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_toastification__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-toastification */ "./node_modules/vue-toastification/dist/index.mjs");
 /* harmony import */ var _vueform_multiselect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @vueform/multiselect */ "./node_modules/@vueform/multiselect/dist/multiselect.mjs");
 /* harmony import */ var _vueform_multiselect_themes_default_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @vueform/multiselect/themes/default.css */ "./node_modules/@vueform/multiselect/themes/default.css");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
@@ -39071,14 +39072,16 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 
 
 
-
-
-/* essentials */
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   __name: 'create',
@@ -39089,13 +39092,13 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       appContext = _getCurrentInstance.appContext;
     var http = appContext.config.globalProperties.$http;
     var toast = (0,vue_toastification__WEBPACK_IMPORTED_MODULE_1__.useToast)();
-
-    /* state */
     var submitting = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
     var submitTried = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
     var date = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
     var memo_no = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
     var products = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
+    var productlist = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
+    var loadingList = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
     var subCatagories = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
     var funds = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
     var suppliers = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
@@ -39115,8 +39118,6 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       }
       return rowState.value[pid];
     }
-
-    /* helpers */
     function productTypeById(pid) {
       var prod = (products.value || []).find(function (p) {
         return String(p.id) === String(pid);
@@ -39156,8 +39157,6 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
         return String(p.subCatagorie_id) === String(subCatagorie_id.value);
       });
     });
-
-    /* qty > 0 check */
     var hasAnyQty = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
       return Object.values(rowState.value).some(function (r) {
         return Number(r.qty) > 0;
@@ -39166,12 +39165,9 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     var canSubmit = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
       return !!fund_id.value && !!supplier_id.value && !!date.value && hasAnyQty.value && !submitting.value;
     });
-
-    /* submit: payload matches your store() validator 1:1, with type-based mapping */
     function submitStock() {
       return _submitStock.apply(this, arguments);
     }
-    /* API */
     function _submitStock() {
       _submitStock = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
         var _res$data, _res$data2, _res$data3, items, _i, _Object$entries, _Object$entries$_i, pid, r, qty, typeId, start, end, payload, res, _t;
@@ -39245,30 +39241,90 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               toast.success((res === null || res === void 0 || (_res$data3 = res.data) === null || _res$data3 === void 0 ? void 0 : _res$data3.message) || 'Stock saved successfully');
               memo_no.value = '';
               rowState.value = {};
-              _context.n = 11;
-              break;
+              _context.n = 10;
+              return refreshList();
             case 10:
-              _context.p = 10;
+              _context.n = 12;
+              break;
+            case 11:
+              _context.p = 11;
               _t = _context.v;
               console.error(_t);
               toast.error((_t === null || _t === void 0 ? void 0 : _t.message) || 'Failed to save stock');
-            case 11:
-              _context.p = 11;
-              submitting.value = false;
-              return _context.f(11);
             case 12:
+              _context.p = 12;
+              submitting.value = false;
+              return _context.f(12);
+            case 13:
               return _context.a(2);
           }
-        }, _callee, null, [[2, 10, 11, 12]]);
+        }, _callee, null, [[2, 11, 12, 13]]);
       }));
       return _submitStock.apply(this, arguments);
+    }
+    var search = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
+    var page = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(1);
+    var perPage = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(25);
+    var normalizedList = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
+      return (productlist.value || []).map(function (r) {
+        var _r$memo_no, _r$date, _r$fund, _r$product;
+        return _objectSpread(_objectSpread({}, r), {}, {
+          memo_no: (_r$memo_no = r === null || r === void 0 ? void 0 : r.memo_no) !== null && _r$memo_no !== void 0 ? _r$memo_no : '',
+          date: (_r$date = r === null || r === void 0 ? void 0 : r.date) !== null && _r$date !== void 0 ? _r$date : '',
+          fund: (_r$fund = r === null || r === void 0 ? void 0 : r.fund) !== null && _r$fund !== void 0 ? _r$fund : null,
+          product: (_r$product = r === null || r === void 0 ? void 0 : r.product) !== null && _r$product !== void 0 ? _r$product : null,
+          stocks: Array.isArray(r === null || r === void 0 ? void 0 : r.stocks) ? r.stocks : r !== null && r !== void 0 && r.stocks ? [r.stocks] : []
+        });
+      });
+    });
+    var filteredRows = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
+      var q = search.value.toLowerCase();
+      if (!q) return normalizedList.value;
+      return normalizedList.value.filter(function (r) {
+        var _r$fund$fund, _r$fund2, _r$date2, _ref3, _ref4, _r$product$product, _r$product2, _r$product3, _r$product4;
+        var memo = r.memo_no.toLowerCase();
+        var fundName = String((_r$fund$fund = r === null || r === void 0 || (_r$fund2 = r.fund) === null || _r$fund2 === void 0 ? void 0 : _r$fund2.fund) !== null && _r$fund$fund !== void 0 ? _r$fund$fund : '').toLowerCase();
+        var dateStr = String((_r$date2 = r === null || r === void 0 ? void 0 : r.date) !== null && _r$date2 !== void 0 ? _r$date2 : '').toLowerCase();
+        var productName = String((_ref3 = (_ref4 = (_r$product$product = r === null || r === void 0 || (_r$product2 = r.product) === null || _r$product2 === void 0 ? void 0 : _r$product2.product) !== null && _r$product$product !== void 0 ? _r$product$product : r === null || r === void 0 || (_r$product3 = r.product) === null || _r$product3 === void 0 ? void 0 : _r$product3.name) !== null && _ref4 !== void 0 ? _ref4 : r === null || r === void 0 || (_r$product4 = r.product) === null || _r$product4 === void 0 ? void 0 : _r$product4.Product) !== null && _ref3 !== void 0 ? _ref3 : '').toLowerCase();
+        return memo.includes(q) || fundName.includes(q) || dateStr.includes(q) || productName.includes(q);
+      });
+    });
+    var totalFiltered = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
+      return filteredRows.value.length;
+    });
+    var totalPages = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
+      return Math.max(1, Math.ceil(totalFiltered.value / perPage.value));
+    });
+    var pagedRows = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
+      var start = (page.value - 1) * perPage.value;
+      return filteredRows.value.slice(start, start + perPage.value);
+    });
+    var startRecord = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
+      return totalFiltered.value ? (page.value - 1) * perPage.value + 1 : 0;
+    });
+    var endRecord = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
+      return Math.min(page.value * perPage.value, totalFiltered.value);
+    });
+    (0,vue__WEBPACK_IMPORTED_MODULE_0__.watch)([search, perPage, totalFiltered], function () {
+      if (page.value > totalPages.value) page.value = 1;
+    });
+    function formatDate(d) {
+      try {
+        return new Intl.DateTimeFormat('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }).format(new Date(d));
+      } catch (_unused) {
+        return d !== null && d !== void 0 ? d : '';
+      }
     }
     function fetchProducts() {
       return _fetchProducts.apply(this, arguments);
     }
     function _fetchProducts() {
       _fetchProducts = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-        var _ref3, _res$data$data, _res$data4, res, _t2;
+        var _ref5, _res$data$data, _res$data4, res, _t2;
         return _regenerator().w(function (_context2) {
           while (1) switch (_context2.p = _context2.n) {
             case 0:
@@ -39277,7 +39333,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
               return http.get('/product/create');
             case 1:
               res = _context2.v;
-              products.value = (_ref3 = (_res$data$data = res === null || res === void 0 || (_res$data4 = res.data) === null || _res$data4 === void 0 ? void 0 : _res$data4.data) !== null && _res$data$data !== void 0 ? _res$data$data : res === null || res === void 0 ? void 0 : res.data) !== null && _ref3 !== void 0 ? _ref3 : [];
+              products.value = (_ref5 = (_res$data$data = res === null || res === void 0 || (_res$data4 = res.data) === null || _res$data4 === void 0 ? void 0 : _res$data4.data) !== null && _res$data$data !== void 0 ? _res$data$data : res === null || res === void 0 ? void 0 : res.data) !== null && _ref5 !== void 0 ? _ref5 : [];
               _context2.n = 3;
               break;
             case 2:
@@ -39353,7 +39409,6 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
     function fetchSuppliers() {
       return _fetchSuppliers.apply(this, arguments);
     }
-    /* lifecycle */
     function _fetchSuppliers() {
       _fetchSuppliers = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
         var _yield$http$get, data, _t5;
@@ -39366,7 +39421,6 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
             case 1:
               _yield$http$get = _context5.v;
               data = _yield$http$get.data;
-              // capital S as per your route
               suppliers.value = Array.isArray(data === null || data === void 0 ? void 0 : data.data) ? data.data : Array.isArray(data === null || data === void 0 ? void 0 : data.suppliers) ? data.suppliers : data;
               _context5.n = 3;
               break;
@@ -39383,6 +39437,57 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       }));
       return _fetchSuppliers.apply(this, arguments);
     }
+    function fetchInvoiceWiseProduct() {
+      return _fetchInvoiceWiseProduct.apply(this, arguments);
+    }
+    function _fetchInvoiceWiseProduct() {
+      _fetchInvoiceWiseProduct = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+        var _ref6, _res$data$data4, _res$data8, res, _t6;
+        return _regenerator().w(function (_context6) {
+          while (1) switch (_context6.p = _context6.n) {
+            case 0:
+              _context6.p = 0;
+              loadingList.value = true;
+              _context6.n = 1;
+              return http.get('/stock-list/create');
+            case 1:
+              res = _context6.v;
+              productlist.value = (_ref6 = (_res$data$data4 = res === null || res === void 0 || (_res$data8 = res.data) === null || _res$data8 === void 0 ? void 0 : _res$data8.data) !== null && _res$data$data4 !== void 0 ? _res$data$data4 : res === null || res === void 0 ? void 0 : res.data) !== null && _ref6 !== void 0 ? _ref6 : [];
+              _context6.n = 3;
+              break;
+            case 2:
+              _context6.p = 2;
+              _t6 = _context6.v;
+              console.error(_t6);
+              toast.error('Failed to load stock entries');
+            case 3:
+              _context6.p = 3;
+              loadingList.value = false;
+              return _context6.f(3);
+            case 4:
+              return _context6.a(2);
+          }
+        }, _callee6, null, [[0, 2, 3, 4]]);
+      }));
+      return _fetchInvoiceWiseProduct.apply(this, arguments);
+    }
+    function refreshList() {
+      return _refreshList.apply(this, arguments);
+    }
+    function _refreshList() {
+      _refreshList = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
+        return _regenerator().w(function (_context7) {
+          while (1) switch (_context7.n) {
+            case 0:
+              _context7.n = 1;
+              return fetchInvoiceWiseProduct();
+            case 1:
+              return _context7.a(2);
+          }
+        }, _callee7);
+      }));
+      return _refreshList.apply(this, arguments);
+    }
     (0,vue__WEBPACK_IMPORTED_MODULE_0__.onMounted)(function () {
       var today = new Date().toISOString().split('T')[0];
       if (!date.value) date.value = today;
@@ -39390,6 +39495,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       fetchSubcats();
       fetchFunds();
       fetchSuppliers();
+      fetchInvoiceWiseProduct();
     });
     var __returned__ = {
       appContext: appContext,
@@ -39400,6 +39506,8 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       date: date,
       memo_no: memo_no,
       products: products,
+      productlist: productlist,
+      loadingList: loadingList,
       subCatagories: subCatagories,
       funds: funds,
       suppliers: suppliers,
@@ -39416,14 +39524,28 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
       hasAnyQty: hasAnyQty,
       canSubmit: canSubmit,
       submitStock: submitStock,
+      search: search,
+      page: page,
+      perPage: perPage,
+      normalizedList: normalizedList,
+      filteredRows: filteredRows,
+      totalFiltered: totalFiltered,
+      totalPages: totalPages,
+      pagedRows: pagedRows,
+      startRecord: startRecord,
+      endRecord: endRecord,
+      formatDate: formatDate,
       fetchProducts: fetchProducts,
       fetchSubcats: fetchSubcats,
       fetchFunds: fetchFunds,
       fetchSuppliers: fetchSuppliers,
+      fetchInvoiceWiseProduct: fetchInvoiceWiseProduct,
+      refreshList: refreshList,
       ref: vue__WEBPACK_IMPORTED_MODULE_0__.ref,
       onMounted: vue__WEBPACK_IMPORTED_MODULE_0__.onMounted,
       getCurrentInstance: vue__WEBPACK_IMPORTED_MODULE_0__.getCurrentInstance,
       computed: vue__WEBPACK_IMPORTED_MODULE_0__.computed,
+      watch: vue__WEBPACK_IMPORTED_MODULE_0__.watch,
       get useToast() {
         return vue_toastification__WEBPACK_IMPORTED_MODULE_1__.useToast;
       },
@@ -42145,16 +42267,71 @@ var _hoisted_36 = {
   "class": "text-end mt-3"
 };
 var _hoisted_37 = ["disabled"];
+var _hoisted_38 = {
+  "class": "card mt-4"
+};
+var _hoisted_39 = {
+  "class": "card-header d-flex align-items-center justify-content-between"
+};
+var _hoisted_40 = {
+  "class": "d-flex align-items-center gap-2"
+};
+var _hoisted_41 = {
+  "class": "badge bg-primary"
+};
+var _hoisted_42 = {
+  "class": "input-group input-group-sm w-auto"
+};
+var _hoisted_43 = ["disabled"];
+var _hoisted_44 = {
+  "class": "card-datatable text-nowrap"
+};
+var _hoisted_45 = {
+  "class": "table-scroll"
+};
+var _hoisted_46 = {
+  "class": "table table-hover align-middle mb-0 subcat-table"
+};
+var _hoisted_47 = {
+  "class": "d-flex align-items-center gap-2"
+};
+var _hoisted_48 = {
+  "class": "fw-medium"
+};
+var _hoisted_49 = {
+  "class": "text-muted"
+};
+var _hoisted_50 = {
+  "class": "text-end"
+};
+var _hoisted_51 = ["href"];
+var _hoisted_52 = {
+  key: 0
+};
+var _hoisted_53 = {
+  "class": "card-footer d-flex align-items-center justify-content-between"
+};
+var _hoisted_54 = {
+  "class": "text-muted small"
+};
+var _hoisted_55 = {
+  "class": "d-flex align-items-center gap-2"
+};
+var _hoisted_56 = {
+  "class": "btn-group btn-group-sm"
+};
+var _hoisted_57 = ["disabled"];
+var _hoisted_58 = ["disabled"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Header "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [_cache[6] || (_cache[6] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Header "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [_cache[10] || (_cache[10] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-list-check"
-  }, null, -1 /* CACHED */)), _cache[7] || (_cache[7] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", {
+  }, null, -1 /* CACHED */)), _cache[11] || (_cache[11] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", {
     "class": "mb-0"
-  }, "Add Products to Stock", -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.products.length) + " Items", 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Top form "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Memo "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [_cache[9] || (_cache[9] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  }, "Add Products to Stock", -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.products.length) + " Items", 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Top form "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Memo "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [_cache[13] || (_cache[13] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
     "class": "p_label"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-hashtag me-1"
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Memo No")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [_cache[8] || (_cache[8] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Memo No")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [_cache[12] || (_cache[12] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
     "class": "p_input-icon"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-receipt"
@@ -42166,11 +42343,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     placeholder: "Enter memo no (optional)"
   }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.memo_no, void 0, {
     trim: true
-  }]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Fund (required) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [_cache[11] || (_cache[11] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  }]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Fund (required) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [_cache[15] || (_cache[15] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
     "class": "p_label"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-link me-1"
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Fund")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [_cache[10] || (_cache[10] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Fund")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [_cache[14] || (_cache[14] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
     "class": "p_input-icon"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-paperclip"
@@ -42185,11 +42362,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "can-clear": true,
     placeholder: "Search fund...",
     "class": "w-100 p_ms p_like-input"
-  }, null, 8 /* PROPS */, ["modelValue", "options"])]), $setup.submitTried && !$setup.fund_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("small", _hoisted_12, "Fund is required")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Supplier (required) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [_cache[13] || (_cache[13] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  }, null, 8 /* PROPS */, ["modelValue", "options"])]), $setup.submitTried && !$setup.fund_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("small", _hoisted_12, "Fund is required")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Supplier (required) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [_cache[17] || (_cache[17] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
     "class": "p_label"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-user-tie me-1"
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Supplier")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [_cache[12] || (_cache[12] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Supplier")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [_cache[16] || (_cache[16] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
     "class": "p_input-icon"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-truck-field"
@@ -42204,11 +42381,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "can-clear": true,
     placeholder: "Search supplier...",
     "class": "w-100 p_ms p_like-input"
-  }, null, 8 /* PROPS */, ["modelValue", "options"])]), $setup.submitTried && !$setup.supplier_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("small", _hoisted_15, "Supplier is required")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Date (required) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [_cache[15] || (_cache[15] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  }, null, 8 /* PROPS */, ["modelValue", "options"])]), $setup.submitTried && !$setup.supplier_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("small", _hoisted_15, "Supplier is required")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Date (required) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [_cache[19] || (_cache[19] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
     "class": "p_label"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-calendar me-1"
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Date")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [_cache[14] || (_cache[14] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Date")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [_cache[18] || (_cache[18] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
     "class": "p_input-icon"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-calendar-days"
@@ -42218,11 +42395,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
       return $setup.date = $event;
     })
-  }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.date]])]), $setup.submitTried && !$setup.date ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("small", _hoisted_18, "Date is required")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Subcategory picker "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [_cache[17] || (_cache[17] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.date]])]), $setup.submitTried && !$setup.date ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("small", _hoisted_18, "Date is required")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Subcategory picker "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [_cache[21] || (_cache[21] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
     "class": "p_label"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-layer-group me-1"
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Subcategory")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [_cache[16] || (_cache[16] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Subcategory")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [_cache[20] || (_cache[20] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
     "class": "p_input-icon"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-list"
@@ -42237,11 +42414,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "can-clear": true,
     placeholder: "Search subcategory…",
     "class": "w-100 p_ms p_like-input"
-  }, null, 8 /* PROPS */, ["modelValue", "options"])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Products table "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [_cache[18] || (_cache[18] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", {
+  }, null, 8 /* PROPS */, ["modelValue", "options"])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Products table "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [_cache[22] || (_cache[22] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", {
     "class": "mb-0"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-layer-group me-2"
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Products in this Subcategory ")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_24, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.productsInSelectedSubcat.length) + " Items", 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_27, [_cache[20] || (_cache[20] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", {
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Products in this Subcategory")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_24, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.productsInSelectedSubcat.length) + " Items", 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_27, [_cache[24] || (_cache[24] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", {
     "class": "p_thead"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
     style: {
@@ -42279,7 +42456,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       })
     }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_32), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.rs(p.id).qty, void 0, {
       number: true
-    }]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" One pair of dates; will be mapped to warranty OR validity based on type "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    }]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" One pair of dates; map later by type "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
       type: "date",
       "class": "form-control",
       "onUpdate:modelValue": function onUpdateModelValue($event) {
@@ -42292,16 +42469,114 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         return $setup.rs(p.id).warranty_end = $event;
       }
     }, null, 8 /* PROPS */, _hoisted_34), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.rs(p.id).warranty_end]])])]);
-  }), 128 /* KEYED_FRAGMENT */)), !$setup.productsInSelectedSubcat.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", _hoisted_35, _toConsumableArray(_cache[19] || (_cache[19] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", {
+  }), 128 /* KEYED_FRAGMENT */)), !$setup.productsInSelectedSubcat.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", _hoisted_35, _toConsumableArray(_cache[23] || (_cache[23] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", {
     colspan: "5",
     "class": "text-center py-4"
   }, "No products found", -1 /* CACHED */)])))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Submit "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_36, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "btn btn-success",
     disabled: !$setup.canSubmit,
     onClick: $setup.submitStock
-  }, _toConsumableArray(_cache[21] || (_cache[21] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+  }, _toConsumableArray(_cache[25] || (_cache[25] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-floppy-disk me-1"
-  }, null, -1 /* CACHED */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Submit Stock ", -1 /* CACHED */)])), 8 /* PROPS */, _hoisted_37)])])]);
+  }, null, -1 /* CACHED */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Submit Stock ", -1 /* CACHED */)])), 8 /* PROPS */, _hoisted_37)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ========================= "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Stock Entry & Invoice List "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ========================= "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_38, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_39, [_cache[28] || (_cache[28] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", {
+    "class": "mb-0"
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    "class": "fa fa-database me-2"
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Stock Entry & Invoice Records ")], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_40, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_41, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.totalFiltered), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_42, [_cache[26] || (_cache[26] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+    "class": "input-group-text"
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    "class": "fa fa-search"
+  })], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    "onUpdate:modelValue": _cache[6] || (_cache[6] = function ($event) {
+      return $setup.search = $event;
+    }),
+    "class": "form-control",
+    placeholder: "Search memo / fund / date / product"
+  }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $setup.search, void 0, {
+    trim: true
+  }]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-sm btn-outline-primary",
+    onClick: $setup.refreshList,
+    disabled: $setup.loadingList
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(['fa', $setup.loadingList ? 'fa-spinner fa-spin' : 'fa-rotate'])
+  }, null, 2 /* CLASS */), _cache[27] || (_cache[27] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+    "class": "ms-1"
+  }, "Refresh", -1 /* CACHED */))], 8 /* PROPS */, _hoisted_43)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_44, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_45, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_46, [_cache[31] || (_cache[31] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", {
+    "class": "table-head"
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", {
+    style: {
+      "background": "#7367f0"
+    }
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+    style: {
+      "width": "70px",
+      "color": "white"
+    }
+  }, "Sl"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+    style: {
+      "color": "white"
+    }
+  }, "Memo No"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+    style: {
+      "color": "white"
+    }
+  }, "Fund"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+    style: {
+      "color": "white"
+    }
+  }, "Date"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+    style: {
+      "width": "120px",
+      "color": "white"
+    },
+    "class": "text-end"
+  }, "Action")])], -1 /* CACHED */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($setup.pagedRows, function (row, i) {
+    var _row$memo_no, _row$fund$fund, _row$fund;
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
+      key: row === null || row === void 0 ? void 0 : row.id
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(($setup.page - 1) * $setup.perPage + i + 1), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_47, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_48, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_row$memo_no = row === null || row === void 0 ? void 0 : row.memo_no) !== null && _row$memo_no !== void 0 ? _row$memo_no : '—'), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("small", _hoisted_49, " (" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(Array.isArray(row === null || row === void 0 ? void 0 : row.stocks) ? row.stocks.length : row !== null && row !== void 0 && row.product ? 1 : 0) + ") ", 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_row$fund$fund = row === null || row === void 0 || (_row$fund = row.fund) === null || _row$fund === void 0 ? void 0 : _row$fund.fund) !== null && _row$fund$fund !== void 0 ? _row$fund$fund : '—'), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(row !== null && row !== void 0 && row.date ? $setup.formatDate(row.date) : ''), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_50, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+      "class": "btn btn-sm btn-primary",
+      href: "/backend/stock-show/".concat(row.id),
+      title: "View"
+    }, _toConsumableArray(_cache[29] || (_cache[29] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+      "class": "fa fa-eye"
+    }, null, -1 /* CACHED */)])), 8 /* PROPS */, _hoisted_51)])]);
+  }), 128 /* KEYED_FRAGMENT */)), !$setup.pagedRows.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", _hoisted_52, _toConsumableArray(_cache[30] || (_cache[30] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", {
+    colspan: "5",
+    "class": "text-center py-4"
+  }, "No records found", -1 /* CACHED */)])))) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_53, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_54, " Showing " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.startRecord) + "–" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.endRecord) + " of " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.totalFiltered) + " records ", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_55, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+    "class": "form-select form-select-sm w-auto",
+    "onUpdate:modelValue": _cache[7] || (_cache[7] = function ($event) {
+      return $setup.perPage = $event;
+    })
+  }, _toConsumableArray(_cache[32] || (_cache[32] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+    value: 10
+  }, "10 / page", -1 /* CACHED */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+    value: 25
+  }, "25 / page", -1 /* CACHED */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+    value: 50
+  }, "50 / page", -1 /* CACHED */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+    value: 100
+  }, "100 / page", -1 /* CACHED */)])), 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $setup.perPage, void 0, {
+    number: true
+  }]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_56, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-outline-secondary",
+    disabled: $setup.page <= 1,
+    onClick: _cache[8] || (_cache[8] = function ($event) {
+      return $setup.page--;
+    })
+  }, _toConsumableArray(_cache[33] || (_cache[33] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    "class": "fa fa-chevron-left"
+  }, null, -1 /* CACHED */)])), 8 /* PROPS */, _hoisted_57), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-outline-secondary",
+    disabled: $setup.page >= $setup.totalPages,
+    onClick: _cache[9] || (_cache[9] = function ($event) {
+      return $setup.page++;
+    })
+  }, _toConsumableArray(_cache[34] || (_cache[34] = [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    "class": "fa fa-chevron-right"
+  }, null, -1 /* CACHED */)])), 8 /* PROPS */, _hoisted_58)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" /Stock Entry & Invoice List ")]);
 }
 
 /***/ }),

@@ -1,179 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supply of Surgical Instruments - Challan</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supply of Surgical Instruments – Challan</title>
+  <style>
+    @page { size: A4; margin: 14mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Times New Roman', serif;
+      background: #f5f7fa;
+      color: #111;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      padding: 32px 12px;
+    }
 
-        body {
-            font-family: 'Times New Roman', serif;
-            padding: 40px;
-            background: #f5f5f5;
-        }
+    .sheet {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+    }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
+    /* ============ HEADER ============ */
+    .header {
+      background: linear-gradient(90deg, #1f5da0, #4b89da);
+      color: white;
+      padding: 28px 30px;
+      position: relative;
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 20px;
-        }
+    .header::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      height: 2px;
+      background: rgba(255,255,255,0.5);
+    }
 
-        .header h1 {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
 
-        .header p {
-            font-size: 16px;
-            margin: 3px 0;
-        }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
 
-        .address {
-            text-align: left;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
+    .header-left img {
+      width: 65px;
+      height: 65px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: white;
+      padding: 4px;
+    }
 
-        .reference {
-            margin-bottom: 25px;
-            line-height: 1.8;
-            font-size: 14px;
-        }
+    .header-left h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.2;
+      color: #fff;
+    }
 
-        .title {
-            text-align: center;
-            margin: 25px 0;
-            font-size: 18px;
-            font-weight: bold;
-        }
+    .header-left p {
+      margin: 2px 0;
+      font-size: 14px;
+      color: #e8ecf2;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-        }
+    .header-right {
+      text-align: right;
+    }
 
-        th, td {
-            border: 1px solid #000;
-            padding: 8px;
-            text-align: left;
-            font-size: 13px;
-        }
+    .header-right h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-        th {
-            background-color: #f0f0f0;
-            font-weight: bold;
-            text-align: center;
-        }
+    .header-right p {
+      font-size: 14px;
+      color: #e8ecf2;
+      margin: 4px 0 0;
+    }
 
-        .sl-no {
-            text-align: center;
-            width: 50px;
-        }
+    /* ============ BODY ============ */
+    .sheet-inner { padding: 24px 28px 32px; }
 
-        .description {
-            width: 350px;
-        }
+    .info-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
 
-        .country {
-            text-align: center;
-            width: 100px;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border: 1px solid #333;
+    }
 
-        .unit {
-            text-align: center;
-            width: 80px;
-        }
+    th, td {
+      border: 1px solid #333;
+      padding: 8px;
+      font-size: 13px;
+    }
 
-        .qty {
-            text-align: center;
-            width: 70px;
-        }
+    th {
+      background: #f1f4f9;
+      text-align: center;
+      font-weight: 700;
+    }
 
-        @media print {
-            body {
-                padding: 0;
-                background: white;
-            }
-            
-            .container {
-                box-shadow: none;
-                padding: 20px;
-            }
-        }
-    </style>
+    td { vertical-align: top; }
+
+    .col-sl { width: 50px; text-align: center; }
+    .col-desc { width: auto; }
+    .col-country { width: 120px; text-align: center; }
+    .col-unit { width: 80px; text-align: center; }
+    .col-qty { width: 70px; text-align: center; }
+
+    tfoot td {
+      font-weight: bold;
+      background: #f7f9fb;
+    }
+
+    .sign {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+      gap: 24px;
+      margin-top: 50px;
+    }
+
+    .sig-line {
+      border-top: 1px solid #333;
+      margin-top: 40px;
+      padding-top: 6px;
+      font-size: 13px;
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .sheet { box-shadow: none; border-radius: 0; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
+  <div class="sheet">
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-left">
+          <div>
             <h1>Mymensingh Medical College</h1>
-            <p>Mymensingh-2200</p>
-            <p>Supply of Surgical Instruments - Challan</p>
+            <p>Mymensingh - 2200</p>
+            <p>Sup Name :{{ $stock->supplier->supplier ?? 'N/A' }}</p>
+            <p>Sup Phone :{{ $stock->supplier->phone ?? 'N/A' }}</p>
+          </div>
         </div>
-
-        <div class="address">
-            <p>Supplier,</p>
-            <p><strong>{{ $stock->supplier->supplier ?? 'N/A' }}</strong></p>
-            <p>{{ $stock->supplier->address ?? 'N/A' }}</p>
-            <p>Phone: {{ $stock->supplier->phone ?? 'N/A' }}</p>
+        <div class="header-right">
+          <h2>Challan</h2>
+          <p>Fund :{{ $stock->fund->fund ?? 'N/A' }}</p>
+          <p>Sup Address :{{ $stock->supplier->address ?? 'N/A' }}</p>
         </div>
+      </div>
+    </header>
 
-        <div class="reference">
-            <p>Memo No: {{ $stock->memo_no ?? 'N/A' }}, Date: {{ \Carbon\Carbon::parse($stock->date)->format('d.m.Y') }}</p>
-            <p>Fund: {{ $stock->fund->fund ?? 'N/A' }}</p>
-        </div>
+    <div class="sheet-inner">
+      <div class="info-line">
+        <span><strong>Memo No:</strong> {{ $stock->memo_no ?? 'N/A' }}</span>
+        <span><strong>Date:</strong> {{ \Carbon\Carbon::parse($stock->date)->format('d.m.Y') }}</span>
+      </div>
 
-        <div class="title">
-            Supply of Products
-        </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="col-sl">SL</th>
+            <th class="col-desc">Description of Item</th>
+            <th class="col-country">Country of Origin</th>
+            <th class="col-unit">Unit</th>
+            <th class="col-qty">Qty</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach($stock->stocks as $index => $item)
+          <tr>
+            <td class="col-sl">{{ $index + 1 }}</td>
+            <td>{{ $item->product->product ?? 'N/A' }}</td>
+            <td class="col-country">{{ $item->product->country->name ?? 'N/A' }}</td>
+            <td class="col-unit">{{ $item->product->unit ?? 'N/A' }}</td>
+            <td class="col-qty">{{ $item->qty ?? 0 }}</td>
+          </tr>
+          @endforeach
 
-        <table>
-            <thead>
-                <tr>
-                    <th class="sl-no">SL<br>No</th>
-                    <th class="description">Description of Item</th>
-                    <th class="country">Country<br>Origin</th>
-                    <th class="unit">Unit</th>
-                    <th class="qty">Qty</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($stock->stocks as $index => $item)
-                <tr>
-                    <td class="sl-no">{{ $index + 1 }}</td>
-                    <td>{{ $item->product->product ?? 'N/A' }}</td>
-                    <td class="country">{{ $item->product->country->name ?? 'N/A' }}</td>
-                    <td class="unit">{{ $item->product->unit ?? 'N/A' }}</td>
-                    <td class="qty">{{ $item->qty ?? 0 }}</td>
-                </tr>
-                @endforeach
+          @if($stock->stocks->isEmpty())
+          <tr>
+            <td colspan="5" style="text-align:center;">No products available</td>
+          </tr>
+          @endif
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4" style="text-align:right;">Total Quantity</td>
+            <td class="col-qty">{{ $stock->initial_qty ?? 0 }}</td>
+          </tr>
+        </tfoot>
+      </table>
 
-                @if($stock->stocks->isEmpty())
-                <tr>
-                    <td colspan="5" style="text-align: center; padding: 20px;">No products available</td>
-                </tr>
-                @endif
-            </tbody>
-        </table>
-
-        <div style="margin-top: 40px;">
-            <p><strong>Total Quantity:</strong> {{ $stock->initial_qty ?? 0 }}</p>
-        </div>
+      <div class="sign">
+        <div><div class="sig-line">Received By</div></div>
+        <div><div class="sig-line">Delivered By</div></div>
+        <div><div class="sig-line">Authorized Signatory</div></div>
+      </div>
     </div>
+  </div>
 </body>
 </html>
