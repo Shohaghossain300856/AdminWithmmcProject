@@ -1,8 +1,9 @@
+<!-- resources/js/components/Backend/Supplier/index.vue -->
 <template>
   <div class="container-xxl flex-grow-1 container-p-y">
     <!-- Header -->
     <div class="d-flex align-items-center m-3 mb-3">
-      <h5 class="card-header ms-0 mb-0 p-0">Sub Categories</h5>
+      <h5 class="card-header ms-0 mb-0 p-0">Suppliers</h5>
       <button class="btn p_create-btn ms-auto" @click="openCreate">
         <i class="fa fa-plus me-2"></i> New
       </button>
@@ -16,16 +17,20 @@
             <thead>
               <tr style="background:#7367f0;">
                 <th style="width:80px">Sl</th>
-                <th>Subcategory</th>
-                <th style="width:220px">Code</th>
+                <th>Supplier</th>
+                <th style="width:180px">Phone</th>
+                <th>Address</th>
                 <th style="width:180px" class="text-end">Action</th>
               </tr>
             </thead>
+
             <tbody>
-              <tr v-for="(row, i) in items" :key="row?.id ?? i">
+              <!-- Data rows -->
+              <tr v-for="(row, i) in safeRows" :key="row.id ?? `tmp-${i}`">
                 <td>{{ i + 1 }}</td>
-                <td>{{ row?.sub_category || '—' }}</td>
-                <td>{{ row?.sub_category_code || row?.code || '—' }}</td>
+                <td>{{ (row.supplier || row.name) || '—' }}</td>
+                <td>{{ row.phone || '—' }}</td>
+                <td>{{ row.address || '—' }}</td>
                 <td class="text-end">
                   <button class="btn btn-sm btn-primary me-2" title="Edit" @click="openEdit(row)">
                     <i class="fa fa-edit"></i>
@@ -35,8 +40,19 @@
                   </button>
                 </td>
               </tr>
-              <tr v-if="!items.length">
-                <td colspan="4" class="text-center py-4">No data</td>
+
+              <!-- Empty state -->
+              <tr v-if="!isLoading && safeRows.length === 0">
+                <td colspan="5" class="text-center">
+                  <span class="muted">No data</span>
+                </td>
+              </tr>
+
+              <!-- (Optional) Loading skeleton rows -->
+              <tr v-if="isLoading" v-for="n in 4" :key="'sk-'+n">
+                <td colspan="5" class="py-3">
+                  <div class="skeleton-line"></div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -48,22 +64,26 @@
     <div v-if="createOpen" class="modal-backdrop" @click.self="closeCreate">
       <div class="modal-card" role="dialog" aria-modal="true">
         <div class="modal-header">
-          <h5 class="m-0"><i class="fa fa-plus me-2"></i> New Subcategory</h5>
+          <h5 class="m-0"><i class="fa fa-plus me-2"></i> Add Supplier</h5>
           <button type="button" class="btn-close" @click="closeCreate"></button>
         </div>
         <div class="modal-body">
           <div class="form-row">
-            <label class="form-label">Subcategory</label>
-            <input v-model.trim="form.sub_category" class="form-input" type="text" placeholder="e.g. Syringe" />
+            <label class="form-label">সাপ্লায়ার নাম</label>
+            <input v-model.trim="form.supplier" class="form-input" type="text" placeholder="e.g. ABC Medical" />
           </div>
           <div class="form-row">
-            <label class="form-label">Code</label>
-            <input v-model.trim="form.sub_category_code" class="form-input" type="text" placeholder="e.g. SYR-01" />
+            <label class="form-label">মোবাইল নম্বর</label>
+            <input v-model.trim="form.phone" class="form-input" type="text" placeholder="e.g. 01xxxxxxxxx" />
+          </div>
+          <div class="form-row">
+            <label class="form-label">এড্রেস</label>
+            <input v-model.trim="form.address" class="form-input" type="text" placeholder="e.g. Rangpur, Bangladesh" />
           </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-ghost" @click="closeCreate">Close</button>
-          <button class="btn btn-primary" :disabled="submitting" @click="createItem">
+          <button class="btn btn-primary" :disabled="submitting" @click="createSupplier">
             <i class="fa" :class="submitting ? 'fa-spinner fa-spin' : 'fa-check'"></i>
             <span class="ms-2">{{ submitting ? 'Saving…' : 'Create' }}</span>
           </button>
@@ -75,22 +95,26 @@
     <div v-if="editOpen" class="modal-backdrop" @click.self="closeEdit">
       <div class="modal-card" role="dialog" aria-modal="true">
         <div class="modal-header">
-          <h5 class="m-0"><i class="fa fa-edit me-2"></i> Edit Subcategory</h5>
+          <h5 class="m-0"><i class="fa fa-edit me-2"></i> Edit Supplier</h5>
           <button type="button" class="btn-close" @click="closeEdit"></button>
         </div>
         <div class="modal-body">
           <div class="form-row">
-            <label class="form-label">Subcategory</label>
-            <input v-model.trim="editForm.sub_category" class="form-input" type="text" />
+            <label class="form-label">സাপ্লায়ার নাম</label>
+            <input v-model.trim="editForm.supplier" class="form-input" type="text" />
           </div>
           <div class="form-row">
-            <label class="form-label">Code</label>
-            <input v-model.trim="editForm.sub_category_code" class="form-input" type="text" />
+            <label class="form-label">মোবাইল নম্বর</label>
+            <input v-model.trim="editForm.phone" class="form-input" type="text" />
+          </div>
+          <div class="form-row">
+            <label class="form-label">এড্রেস</label>
+            <input v-model.trim="editForm.address" class="form-input" type="text" />
           </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-ghost" @click="closeEdit">Cancel</button>
-          <button class="btn btn-primary" :disabled="submitting" @click="updateItem">
+          <button class="btn btn-primary" :disabled="submitting" @click="updateSupplier">
             <i class="fa" :class="submitting ? 'fa-spinner fa-spin' : 'fa-check'"></i>
             <span class="ms-2">{{ submitting ? 'Saving…' : 'Update' }}</span>
           </button>
@@ -108,7 +132,7 @@
         <div class="modal-body">
           <p class="mb-2">
             Are you sure you want to delete
-            <b>{{ deleteRow?.sub_category || 'this subcategory' }}</b>?
+            <b>{{ (deleteRow && (deleteRow.supplier || deleteRow.name)) || 'this supplier' }}</b>?
           </p>
           <p class="muted">This action cannot be undone.</p>
         </div>
@@ -126,120 +150,142 @@
 </template>
 
 <script setup>
-import { ref, onMounted, getCurrentInstance } from 'vue'
+import { ref, onMounted, getCurrentInstance, computed } from 'vue'
 import { useToast } from 'vue-toastification'
 
 const { appContext } = getCurrentInstance()
 const http = appContext.config.globalProperties.$http
 const toast = useToast()
 
-// state
 const isLoading = ref(false)
-const submitting  = ref(false)
+const submitting = ref(false)
+const suppliers = ref([])
 
-// data
-const items = ref([])
+/* Computed safe rows: remove falsy/empty objects */
+const safeRows = computed(() => {
+  const arr = Array.isArray(suppliers.value) ? suppliers.value : []
+  return arr
+    .filter(r => r && typeof r === 'object')
+    .filter(r => (r.id != null) || r.supplier || r.name || r.phone || r.address)
+})
 
-// create
 const createOpen = ref(false)
-const form = ref({ sub_category: '', sub_category_code: '' })
+const form = ref({ supplier: '', phone: '', address: '' })
 
-// edit
 const editOpen = ref(false)
 const editId = ref(null)
-const editForm = ref({ sub_category: '', sub_category_code: '' })
+const editForm = ref({ supplier: '', phone: '', address: '' })
 
-// delete
 const deleteOpen = ref(false)
 const deleteRow = ref(null)
 
-async function fetchItems () {
+function normalizeApiList(payload) {
+  // Handles: {data:[...]}, {list:[...]}, or direct array
+  if (!payload) return []
+  if (Array.isArray(payload)) return payload
+  if (Array.isArray(payload.data)) return payload.data
+  if (Array.isArray(payload.list)) return payload.list
+  return []
+}
+
+async function fetchSuppliers () {
   try {
     isLoading.value = true
-    const res = await http.get('/subCatagories/create')
-    items.value = res?.data?.data ?? res?.data ?? []
-    console.log('data', items.value)
+    const res = await http.get('/Supplier/create') 
+    suppliers.value = normalizeApiList(res?.data)
+    console.log(suppliers.value);
   } catch (e) {
     console.error(e)
-    toast.error('Failed to load')
+    suppliers.value = []
+    toast.error('Failed to load suppliers')
   } finally {
     isLoading.value = false
   }
 }
 
-// Create
+/* ===== CREATE ===== */
 function openCreate(){ createOpen.value = true }
-function closeCreate(){ createOpen.value = false; form.value = { sub_category:'', sub_category_code:'' } }
-async function createItem(){
-  if(!form.value.sub_category?.trim()){ toast.error('Subcategory required'); return }
+function closeCreate(){ createOpen.value = false; form.value = { supplier:'', phone:'', address:'' } }
+
+async function createSupplier(){
+  if(!form.value.supplier?.trim()){ toast.error('Supplier name is required'); return }
   try{
     submitting.value = true
-    await http.post('/subCatagories', {
-      sub_category: form.value.sub_category,
-      sub_category_code: form.value.sub_category_code || null
+    await http.post('/Supplier', {
+      supplier: form.value.supplier,
+      phone: form.value.phone || null,
+      address: form.value.address || null
     })
     toast.success('Created successfully')
     closeCreate()
-    await fetchItems()
+    await fetchSuppliers()
   }catch(e){
+    console.error(e)
     toast.error(e?.response?.data?.message || 'Create failed')
   }finally{
     submitting.value = false
   }
 }
 
-// Edit
+/* ===== EDIT ===== */
 function openEdit(row){
-  editId.value = row.id
+  editId.value = row?.id
   editForm.value = {
-    sub_category: row.sub_category ?? '',
-    sub_category_code: row.sub_category_code ?? row.code ?? ''
+    supplier: row?.supplier || row?.name || '',
+    phone: row?.phone || '',
+    address: row?.address || ''
   }
   editOpen.value = true
 }
-function closeEdit(){ editOpen.value = false; editId.value = null; editForm.value = { sub_category:'', sub_category_code:'' } }
-async function updateItem(){
-  if(!editForm.value.sub_category?.trim()){ toast.error('Subcategory required'); return }
+function closeEdit(){ editOpen.value = false; editId.value = null; editForm.value = { supplier:'', phone:'', address:'' } }
+
+async function updateSupplier(){
+  if(!editId.value) return
+  if(!editForm.value.supplier?.trim()){ toast.error('Supplier name is required'); return }
   try{
     submitting.value = true
-    await http.put(`/subCatagories/${editId.value}`, {
-      sub_category: editForm.value.sub_category,
-      sub_category_code: editForm.value.sub_category_code || null
-    })
-    toast.success('Updated Created successfully')
+ await http.put(`/Supplier/${editId.value}`, {
+  supplier: editForm.value.supplier,
+  phone: editForm.value.phone || null,
+  address: editForm.value.address || null
+})
+    toast.success('Updated successfully')
     closeEdit()
-    await fetchItems()
+    await fetchSuppliers()
   }catch(e){
+    console.error(e)
     toast.error(e?.response?.data?.message || 'Update failed')
   }finally{
     submitting.value = false
   }
 }
 
-// Delete
+/* ===== DELETE ===== */
 function openDelete(row){ deleteRow.value = row; deleteOpen.value = true }
 function closeDelete(){ deleteOpen.value = false; deleteRow.value = null }
+
 async function doDelete(){
-  if(!deleteRow.value?.id) return
+  if(!(deleteRow.value && deleteRow.value.id)) return
   try{
     submitting.value = true
-    await http.delete(`/subCatagories/${deleteRow.value.id}`)
+    await http.delete(`/Supplier/${deleteRow.value.id}`)
     toast.success('Deleted')
     closeDelete()
-    await fetchItems()
+    await fetchSuppliers()
   }catch(e){
+    console.error(e)
     toast.error(e?.response?.data?.message || 'Delete failed')
   }finally{
     submitting.value = false
   }
 }
 
-onMounted(fetchItems)
+onMounted(fetchSuppliers)
 </script>
 
 <style scoped>
 /* Top CTA */
-.p_create-btn{ background:#7367f0; border:none; box-shadow:0 6px 14px rgba(115,103,240,.3); }
+.p_create-btn{ background:#7367f0; border:none; box-shadow:0 6px 14px rgba(115,103,240,.3); color:#fff; }
 .p_create-btn:hover{ filter:brightness(1.05); transform:translateY(-1px); }
 
 /* Loading lock */
@@ -249,21 +295,25 @@ onMounted(fetchItems)
 .table-scroll{ max-height:65vh; overflow-y:auto; border-radius:.5rem; border:1px solid rgba(0,0,0,.08); }
 .table th{ text-transform:uppercase; font-size:.8125rem; letter-spacing:.2px; color:#fff; }
 
-/* ===== Modal System (fixed header/label overlap) ===== */
+/* Skeleton */
+.skeleton-line{
+  height:10px; width:100%; background:linear-gradient(90deg,#eee,#f7f7f7,#eee);
+  border-radius:6px; animation:pulse 1.2s infinite; 
+}
+@keyframes pulse{ 0%{opacity:.6} 50%{opacity:1} 100%{opacity:.6} }
+
+/* ===== Modal System ===== */
 .modal-backdrop{ position:fixed; inset:0; display:grid; place-items:center; background:rgba(15,18,30,.55); z-index:99999; padding:12px; }
 .modal-card{ width:min(640px,96vw); background:#fff; border-radius:14px; box-shadow:0 10px 30px rgba(0,0,0,.25); overflow:hidden; max-height:92vh; display:flex; flex-direction:column; position:relative; }
-.modal-card.modal-wide{ width:min(880px,96vw); }
-
-.modal-header{ position:sticky; top:0; z-index:10; background:#fff; flex:0 0 auto; padding:12px 16px; display:flex; align-items:center; gap:12px; justify-content:space-between; border-bottom:1px solid #f0f0f0; }
+.modal-header{ position:sticky; top:0; z-index:10; background:#fff; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #f0f0f0; }
 .modal-header.danger{ background:#fff5f5; border-bottom-color:#fecaca; }
-
 .modal-body{ flex:1 1 auto; min-height:0; overflow:auto; padding:16px; background:#fff; }
 .modal-footer{ flex:0 0 auto; padding:12px 16px; display:flex; align-items:center; gap:12px; border-top:1px solid #f0f0f0; background:#fff; }
 
-/* Form rows inside modal */
+/* Inputs */
 .form-row{ display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
 .form-label{ font-weight:700; color:#334155; margin-bottom:4px; font-size:14px; }
-.form-input{ height:44px; border:1px solid #e5e7eb; border-radius:12px; padding:0 12px; outline:none; background:#fff; }
+.form-input{ height:44px; border:1px solid #e5e7eb; border-radius:12px; padding:0 12px; outline:none; background:#fff; width:100%; }
 .form-input:focus{ border-color:#7367f0; box-shadow:0 0 0 4px rgba(115,103,240,.15); }
 
 /* Buttons */
@@ -277,4 +327,5 @@ onMounted(fetchItems)
 .btn-danger:hover{ filter:brightness(1.05); transform:translateY(-1px); }
 .btn-close{ border:none; background:transparent; font-size:1.25rem; line-height:1; color:#64748b; border-radius:10px; padding:6px; }
 .btn-close:hover{ background:#eef2ff; color:#3730a3; }
+.muted{ color:#94a3b8; font-size:.9rem; }
 </style>

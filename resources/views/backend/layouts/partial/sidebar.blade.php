@@ -18,7 +18,10 @@
   {{ Route::currentRouteNamed('fund.index') 
   || Route::currentRouteNamed('catagories.index') 
   || Route::currentRouteNamed('subCatagories.index') 
-  || Route::currentRouteNamed('sub-Catagories-list.index') ? 'active open' : '' }}">
+  || Route::currentRouteNamed('sub-Catagories-list.index')
+  || Route::currentRouteNamed('product.index')
+  || Route::currentRouteNamed('stock-list.index')
+  || Route::currentRouteNamed('Supplier.index') ? 'active open' : '' }}">
   
   <a href="javascript:void(0);" class="menu-link menu-toggle">
     <i class="menu-icon tf-icons ti ti-users"></i>
@@ -31,7 +34,7 @@
     <li class="menu-item {{ Route::currentRouteNamed('fund.index') ? 'active' : '' }}">
       <a href="{{ route('fund.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-smart-home"></i>
-        <div data-i18n="fund Index">Add Fund</div>
+        <div data-i18n="fund Index">Fund</div>
       </a>
     </li>
     @endcan
@@ -40,7 +43,7 @@
     <li class="menu-item {{ Route::currentRouteNamed('catagories.index') ? 'active' : '' }}">
       <a href="{{ route('catagories.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-smart-home"></i>
-        <div data-i18n="fund Catagories">Add Categories</div>
+        <div data-i18n="fund Catagories">Categories</div>
       </a>
     </li>
     @endcan
@@ -49,19 +52,36 @@
     <li class="menu-item {{ Route::currentRouteNamed('subCatagories.index') ? 'active' : '' }}">
       <a href="{{ route('subCatagories.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-smart-home"></i>
-        <div data-i18n="fund subCatagories">Add Sub Catagories</div>
+        <div data-i18n="fund subCatagories">Subcatagories</div>
+      </a>
+    </li>
+    @endcan
+    @can('product')
+    <li class="menu-item {{ Route::currentRouteNamed('product.index') ? 'active' : '' }}">
+      <a href="{{ route('product.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-smart-home"></i>
+        <div data-i18n="Add Product">Product</div>
       </a>
     </li>
     @endcan
 
-    @can('sub-Catagories-list')
+      @can('Supplier')
+    <li class="menu-item {{ Route::currentRouteNamed('Supplier.index') ? 'active' : '' }}">
+      <a href="{{ route('Supplier.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-smart-home"></i>
+        <div data-i18n="Add Item">Supplier</div>
+      </a>
+    </li>
+    @endcan 
+
+<!--     @can('sub-Catagories-list')
     <li class="menu-item {{ Route::currentRouteNamed('sub-Catagories-list.index') ? 'active' : '' }}">
       <a href="{{ route('sub-Catagories-list.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-smart-home"></i>
         <div data-i18n="Sub Catagories List">SubCategories List</div>
       </a>
     </li>
-    @endcan
+    @endcan -->
 
   </ul>
 </li>
@@ -73,7 +93,7 @@
   
   <a href="javascript:void(0);" class="menu-link menu-toggle">
     <i class="menu-icon tf-icons ti ti-users"></i>
-    <div data-i18n="Fund Management">Stock Management</div>
+    <div data-i18n="Fund Management">Stock In</div>
   </a>
 
   <ul class="menu-sub">
@@ -82,7 +102,15 @@
     <li class="menu-item {{ Route::currentRouteNamed('stock-create.index') ? 'active' : '' }}">
       <a href="{{ route('stock-create.index') }}" class="menu-link">
         <i class="menu-icon tf-icons ti ti-smart-home"></i>
-        <div data-i18n="Stock Create">Stock Create</div>
+        <div data-i18n="Stock Create">Stock</div>
+      </a>
+    </li>
+    @endcan  
+    @can('stock list')
+    <li class="menu-item {{ Route::currentRouteNamed('stock-list.index') ? 'active' : '' }}">
+      <a href="{{ route('stock-list.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-smart-home"></i>
+        <div data-i18n="Stock Create">Stock List</div>
       </a>
     </li>
     @endcan

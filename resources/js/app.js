@@ -4,7 +4,10 @@ import Fund from "./components/Backend/Fund/Index.vue";
 import catagories from "./components/Backend/Catagories/Index.vue";
 import subcategories from "./components/Backend/subCategories/Index.vue";
 import subcategorieslist from "./components/Backend/subCategories/List.vue";
+import supplier from "./components/Backend/Supplier/index.vue";
+import productlist from "./components/Backend/Product/index.vue";
 import stockcreate from "./components/Backend/Stock/create.vue";
+import stocklist from "./components/Backend/Stock/StockList.vue";
 import http from "./lib/http";
 
 // loader
@@ -29,6 +32,9 @@ app.component("catagories", catagories);
 app.component("subcategories", subcategories);
 app.component("subcategorieslist", subcategorieslist);
 app.component("stockcreate", stockcreate);
+app.component("supplier", supplier);
+app.component("productlist", productlist);
+app.component("stocklist", stocklist);
 
 app.use(Toast, {
   position: "top-right",

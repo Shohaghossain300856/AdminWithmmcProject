@@ -20,6 +20,7 @@
     "dependencies": {
         "@primevue/icons": "^4.1.1",
         "@vue/compiler-sfc": "^3.5.3",
+        "@vueform/multiselect": "^2.6.11",
         "jquery": "^3.7.1",
         "select2": "^4.1.0-rc.0",
         "sweetalert2": "^11.14.5",

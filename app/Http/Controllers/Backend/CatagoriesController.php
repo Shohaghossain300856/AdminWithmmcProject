@@ -18,7 +18,7 @@ class CatagoriesController extends Controller
 public function create()
 {
 
-    $getCategories = Catagory::with('fund')->latest()->get();
+    $getCategories = Catagory::latest()->get();
     return response()->json([
         'status'  => true,          
         'message' => 'Successfully',
@@ -31,13 +31,11 @@ public function store(Request $request)
     $request->validate([
         'name'    => 'required|string|max:255|unique:catagories,name',
         'code'    => 'required|string|max:20|unique:catagories,code',
-        'fund_id' => 'required|integer|exists:funds,id',
     ]);
 
     $catagory = Catagory::create([
         'code'    => $request->code,
         'name'    => $request->name,
-        'fund_id' => $request->fund_id,
     ]);
 
     return response()->json([
@@ -65,7 +63,6 @@ public function update(Request $request, $id)
             'max:20',
             Rule::unique('catagories', 'code')->ignore($id),
         ],
-        'fund_id' => 'required|integer|exists:funds,id',
     ]);
 
     $catagory = Catagory::findOrFail($id);

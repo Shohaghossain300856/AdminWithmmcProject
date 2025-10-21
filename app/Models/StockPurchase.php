@@ -4,27 +4,35 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Stock;
+
+use App\Models\Backend\Fund;
+use App\Models\Backend\Supplier;
 
 class StockPurchase extends Model
 {
     use HasFactory;
-
-     protected $fillable = [
-        'stock_id',
+    protected $fillable = [
+        'fund_id',
+        'supplier_id',
+        'memo_no',
         'date',
-        'ref_no',
-        'purchase_qty',
-        'unit_price',
+        'initial_qty',
+        'user_id',
     ];
 
-    protected $casts = [
-        'date' => 'date',
-        'purchase_qty' => 'integer',
-        'unit_price' => 'decimal:2',
-    ];
+ public function stocks()
+{
+    return $this->hasMany(\App\Models\Stock::class, 'stock_purchase_id', 'id');
+}
 
-    public function stock()
+       public function supplier()
     {
-        return $this->belongsTo(Stock::class);
+        return $this->belongsTo(Supplier::class, 'supplier_id', 'id');
     }
+       public function fund()
+    {
+        return $this->belongsTo(Fund::class);
+    }
+ 
 }

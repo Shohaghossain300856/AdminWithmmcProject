@@ -33,6 +33,15 @@ class PermissionSeeder extends Seeder
             'user-create',
             'user-edit',
             'user-delete',
+            'fund management',
+            'fund',
+            'catagories',
+            'subCatagories',
+            'product',
+            'Supplier',
+            'stock management',
+            'stock',
+            'stock list',
         ];
 
         foreach ($permissions as $permission) {

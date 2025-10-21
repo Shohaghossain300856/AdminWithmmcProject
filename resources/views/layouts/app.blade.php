@@ -20,7 +20,8 @@ $baseurl = url('/');
 <meta name="description" content=""/>
 
 <!-- Favicon -->
-<link rel="icon" type="image/x-icon" href="{{asset("favicon.png")}}"/>
+<link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}" />
+
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -45,7 +46,7 @@ $baseurl = url('/');
 <script src="{{$baseurl}}/backend/vendor/js/template-customizer.js"></script>
 <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
 <script src="{{$baseurl}}/backend/js/config.js"></script>
-<link rel="stylesheet" href="{{ mix('css/app.css') }}">
+<script src="{{$baseurl}}/css/app.css"></script>
 <script defer src="https://unpkg.com/alpinejs"></script>
 </head>
 
@@ -126,6 +127,6 @@ $baseurl = url('/');
           });
       </script>
   @endif
-    <script src="{{ mix('js/app.js') }}"></script>
+  <script src="{{$baseurl.'/js/app.js'}}"></script>
 </body>
 </html>

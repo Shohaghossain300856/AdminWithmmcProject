@@ -11,13 +11,25 @@ use App\Http\Controllers\Backend\CatagoriesController;
 use App\Http\Controllers\Backend\SubCatagoriesController;
 use App\Http\Controllers\Backend\SubCatagoriesListController;
 use App\Http\Controllers\Backend\StockController;
+use App\Http\Controllers\Backend\SupplierController;
+use App\Http\Controllers\Backend\ProductController;
+use App\Http\Controllers\Backend\StockListController;
+use App\Http\Controllers\Backend\CountryController;
 use App\Http\Controllers\PdfController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth','checkUserStatus'])->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'home')->name('dashboard');
+       Route::get('/dashboard/counts', [DashboardController::class, 'create'])->name('dashboard.counts');
     });
+
+  Route::get('/getuser_id', function () {
+    return response()->json([
+        'user_id' => Auth::id()
+    ]);
+});
     // setting routes;
     Route::middleware(['permission:setting-index|setting-create|setting-edit|setting-delete'])->group(function () {
 
@@ -59,9 +71,17 @@ Route::middleware(['auth','checkUserStatus'])->group(function () {
       Route::resource('subCatagories', SubCatagoriesController::class);
       Route::resource('sub-Catagories-list', SubCatagoriesListController::class);
       Route::resource('stock-create', StockController::class);
+      Route::resource('stock-list', StockListController::class);
+
+    Route::get('/stock-show/{id}', [StockController::class, 'show'])->name('stock.show');
+
+
+      Route::resource('Supplier', SupplierController::class);
+      Route::resource('product', ProductController::class);
 
 
 Route::get('/subcategoriespdf', [PdfController::class, 'Subcategoriespdf'])->name('subcategoriespdf');
+Route::get('/country-get', [CountryController::class, 'create'])->name('country-get');
 
 
 });

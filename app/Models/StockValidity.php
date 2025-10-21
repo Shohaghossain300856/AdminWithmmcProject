@@ -9,18 +9,11 @@ class StockValidity extends Model
 {
     use HasFactory;
 
-     protected $fillable = [
-        'stock_id','validity_start','validity_end','warranty_start','warranty_end'
-    ];
-    protected $casts = [
-        'validity_start' => 'date',
-        'validity_end'   => 'date',
-        'warranty_start' => 'date',
-        'warranty_end'   => 'date',
+    protected $fillable = [
+        'stock_purchase_id',
+        'stock_id',
+        'warranty_start', 'warranty_end',
+        'validity_start', 'validity_end',
     ];
 
-    public function stock()
-    {
-        return $this->belongsTo(Stock::class);
-    }
 }

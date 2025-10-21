@@ -103,7 +103,7 @@
     <script src="{{$baseurl.'/backend/vendor/libs/sweetalert2/sweetalert2.js'}}"></script>
     <script src="{{$baseurl.'/backend/js/extended-ui-sweetalert2.js'}}"></script>
     <!-- alert fire -->
-      <script src="{{ mix('js/app.js') }}"></script>
+   <script src="{{$baseurl.'/js/app.js'}}"></script>
       @if(session()->has('success'))
           <script>
               document.addEventListener('DOMContentLoaded', function () {

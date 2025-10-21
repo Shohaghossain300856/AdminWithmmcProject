@@ -4,32 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Backend\Catagory;
-use App\Models\Backend\Fund;
+use App\Models\Backend\Product;
+use App\Models\StockValidity;
 
 class Stock extends Model
 {
     use HasFactory;
+   protected $fillable = [
 
- protected $fillable = [
-        'fund_id',
-        'category_id',
-        'item_id',  
-        'qty',
+        'stock_purchase_id', 
+        'product_id', 
+        'qty', 
+        'avl_qty',
     ];
 
-    public function purchases()
-    {
-        return $this->hasMany(StockPurchase::class);
-    }
+ public function product()
+{
+    return $this->belongsTo(\App\Models\Backend\Product::class, 'product_id');
+}
 
-    public function validity()
-    {
-        return $this->hasOne(StockValidity::class);
-    }
+public function validity()
+{
+    return $this->hasOne(\App\Models\StockValidity::class, 'stock_id', 'id');
+}
 
-    
-
-    public function fund()    { return $this->belongsTo(Fund::class); }
-    public function category(){ return $this->belongsTo(Catagory::class); }
 }

@@ -12,25 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('stock_validities', function (Blueprint $table) {
-            $table->id();
+     $table->id();
 
-            // 🔹 Relationship with stocks
-            $table->foreignId('stock_id')
-                ->constrained('stocks')
-                ->cascadeOnDelete();
+    $table->unsignedInteger('stock_purchase_id');
+    $table->unsignedBigInteger('stock_id'); 
 
-            // 🔹 Validity period (e.g. product expiry or validity)
-            $table->date('validity_start')->nullable()->comment('Product validity start date');
-            $table->date('validity_end')->nullable()->comment('Product validity end date');
+    $table->date('warranty_start')->nullable();
+    $table->date('warranty_end')->nullable();
+    $table->date('validity_start')->nullable();
+    $table->date('validity_end')->nullable();
 
-            // 🔹 Warranty period
-            $table->date('warranty_start')->nullable()->comment('Warranty start date');
-            $table->date('warranty_end')->nullable()->comment('Warranty end date');
-
-            $table->timestamps();
-
-            // 🔹 Index for faster queries
-            $table->index(['stock_id', 'validity_end', 'warranty_end'], 'idx_stock_validity_warranty');
+    $table->timestamps();
         });
     }
 

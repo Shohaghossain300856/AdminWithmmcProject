@@ -1,9 +1,10 @@
+<!-- resources/js/components/Backend/Subcategories/index.vue -->
 <template>
   <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card-body">
       <!-- Header & Add New Button -->
       <div class="d-flex align-items-center mb-5">
-        <h5 class="card-header mb-0">Sub Categories Management</h5>
+        <h5 class="card-header mb-0">Categories Management</h5>
         <button @click="openModal" type="button" class="btn btn-primary ms-auto">
           <i class="fa fa-plus me-2"></i> Add New
         </button>
@@ -24,7 +25,7 @@
                 <input
                   type="search"
                   class="form-control"
-                  placeholder="Search by"
+                  placeholder="Search by code or name"
                   v-model="Search_Categories"
                 />
               </label>
@@ -45,7 +46,7 @@
           </div>
         </div>
 
-        <!-- ===== Table (SMX style) ===== -->
+        <!-- ===== Table ===== -->
         <div class="card-datatable text-nowrap">
           <div class="table-scroll">
             <table class="table p_table">
@@ -53,8 +54,7 @@
                 <tr>
                   <th>Sl</th>
                   <th>Code</th>
-                  <th>Fund</th>
-                  <th>Categories</th>
+                  <th>Category</th>
                   <th style="width:180px;">Action</th>
                 </tr>
               </thead>
@@ -64,7 +64,6 @@
                 <tr v-for="(category, index) in visibleCategories" :key="category.id">
                   <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
                   <td>{{ category.code || '—' }}</td>
-                  <td>{{ category.fund?.fund || '—' }}</td>
                   <td>{{ category.name || '—' }}</td>
                   <td class="p_actions">
                     <button @click="editModeData(category)" class="btn btn-sm btn-primary me-2" title="Edit">
@@ -78,21 +77,21 @@
 
                 <!-- No matches -->
                 <tr v-if="!isLoading && getCategory.length > 0 && filteredCategories.length === 0">
-                  <td colspan="5" class="text-center text-muted">
+                  <td colspan="4" class="text-center text-muted">
                     No categories found matching your search criteria.
                   </td>
                 </tr>
 
                 <!-- No data -->
                 <tr v-if="getCategory.length === 0 && !isLoading">
-                  <td colspan="5" class="text-center text-muted">
+                  <td colspan="4" class="text-center text-muted">
                     No categories found. Please add some categories.
                   </td>
                 </tr>
 
                 <!-- Inline loader fallback -->
                 <tr v-if="isLoading">
-                  <td colspan="5" class="text-center">
+                  <td colspan="4" class="text-center">
                     <div class="spinner-border spinner-border-sm" role="status">
                       <span class="visually-hidden">Loading...</span>
                     </div>
@@ -157,25 +156,16 @@
     <div class="modal-card animate-pop">
       <!-- Header -->
       <div class="modal-header">
-        <h5 id="createTitle" class="m-0">Add New Sub Category</h5>
+        <h5 id="createTitle" class="m-0">Add New  Category</h5>
         <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
       </div>
 
       <!-- Body -->
       <div class="modal-body">
         <form @submit.prevent="SubmitCatagories">
-          <!-- Fund -->
-          <div class="mb-3">
-            <label class="form-label">Fund</label>
-            <select ref="createFundSelectRef" class="form-control" style="width:100%"></select>
-            <small v-if="formErrors.fund_id" class="text-danger">
-              {{ formErrors.fund_id[0] }}
-            </small>
-          </div>
-
           <!-- Code -->
           <div class="mb-3">
-            <label for="catCode" class="form-label">Sub Category Code</label>
+            <label for="catCode" class="form-label">Category Code</label>
             <input
               id="catCode"
               type="text"
@@ -190,13 +180,13 @@
 
           <!-- Name -->
           <div class="mb-3">
-            <label for="catName" class="form-label">Sub Category Name</label>
+            <label for="catName" class="form-label">Category Name</label>
             <input
               id="catName"
               type="text"
               v-model="formData.name"
               class="form-control"
-              placeholder="Enter Sub category name"
+              placeholder="Enter category name"
             />
             <small v-if="formErrors.name" class="text-danger">
               {{ formErrors.name[0] }}
@@ -235,13 +225,7 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <form @submit.prevent="updateFund">
-          <!-- Fund -->
-          <div class="mb-3">
-            <label class="form-label">Fund</label>
-            <select ref="editFundSelectRef" class="form-control" style="width:100%"></select>
-          </div>
-
+        <form @submit.prevent="updateCategory">
           <!-- Code -->
           <div class="mb-3">
             <label for="editCatCode" class="form-label">Category Code</label>
@@ -256,7 +240,7 @@
 
           <!-- Name -->
           <div class="mb-3">
-            <label class="form-label">Category</label>
+            <label class="form-label">Category Name</label>
             <input type="text" class="form-control" v-model="formData.name" placeholder="Name" required />
           </div>
         </form>
@@ -265,7 +249,7 @@
       <!-- Footer -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" @click="editModel = false" :disabled="isLoading">Cancel</button>
-        <button type="button" class="btn btn-primary" @click="updateFund" :disabled="isLoading">
+        <button type="button" class="btn btn-primary" @click="updateCategory" :disabled="isLoading">
           <span v-if="isLoading"><i class="fas fa-spinner fa-spin me-2"></i>Submitting...</span>
           <span v-else>Submit</span>
         </button>
@@ -327,9 +311,6 @@ const { appContext } = getCurrentInstance();
 const http = appContext.config.globalProperties.$http;
 import { useToast } from "vue-toastification";
 const toast = useToast();
-import $ from 'jquery'
-import 'select2/dist/css/select2.min.css'
-import 'select2'
 
 // modals
 const createModal = ref(false);
@@ -341,8 +322,6 @@ const deleteId = ref(null);
 // refs
 const createModalRef = ref(null)
 const editModalRef   = ref(null)
-const createFundSelectRef = ref(null)
-const editFundSelectRef   = ref(null)
 
 // state
 const formErrors = ref({})
@@ -350,23 +329,12 @@ const getCategory = ref([]);
 const Search_Categories = ref('')
 const itemsPerPage = ref(10)
 const currentPage = ref(1)
-const funds = ref([])
-const formData = ref({ name:'', fund_id:'', code:'' })
+
+// form (NO fund_id anymore)
+const formData = ref({ name:'', code:'' })
 
 function openModal(){ createModal.value = true }
 function closeModal(){ createModal.value = false }
-
-async function getFunds() {
-  isLoading.value = true;
-  try {
-    const res = await http.get("/fund/create");
-    funds.value = res.data.funds || [];
-  } catch (e) {
-    console.error("Error loading funds:", e);
-  } finally {
-    isLoading.value = false;
-  }
-}
 
 async function getCategories() {
   isLoading.value = true;
@@ -384,11 +352,14 @@ async function SubmitCatagories() {
   isLoading.value = true
   formErrors.value = {}
   try {
-    await http.post("/catagories", formData.value)
-    toast.success("Categories created successfully!")
+    await http.post("/catagories", {
+      name: (formData.value.name || '').trim(),
+      code: (formData.value.code || '').trim()
+    })
+    toast.success(" category created successfully!")
     await getCategories()
     closeModal()
-    formData.value = { name:'', fund_id:'', code:'' }
+    formData.value = { name:'', code:'' }
   } catch (error) {
     if (error.response?.status === 422) {
       formErrors.value = error.response.data.errors || {}
@@ -400,81 +371,45 @@ async function SubmitCatagories() {
   }
 }
 
-function initSelect2Create () {
-  if (!createFundSelectRef.value || !createModalRef.value) return
-  const $el = $(createFundSelectRef.value)
-  if ($el.data('select2')) { $el.off('change.select2'); $el.select2('destroy') }
-  const selectData = (funds.value || []).map(f => ({ id:String(f.id), text:f.fund }))
-  $el.select2({
-    width:'100%',
-    placeholder:'Select or search fund',
-    allowClear:true,
-    minimumResultsForSearch:0,
-    data: selectData,
-    dropdownParent: $(createModalRef.value).find('.modal-card'),
-  })
-  $el.on('change.select2', function(){ formData.value.fund_id = this.value || '' })
-  $el.val(formData.value.fund_id ? String(formData.value.fund_id) : '').trigger('change')
-}
-
-function initSelect2Edit () {
-  if (!editFundSelectRef.value || !editModalRef.value) return
-  const $el = $(editFundSelectRef.value)
-  if ($el.data('select2')) { $el.off('change.select2'); $el.select2('destroy') }
-  const selectData = (funds.value || []).map(f => ({ id:String(f.id), text:f.fund }))
-  $el.select2({
-    width:'100%',
-    placeholder:'Select or search fund',
-    allowClear:true,
-    minimumResultsForSearch:0,
-    data: selectData,
-    dropdownParent: $(editModalRef.value).find('.modal-card'),
-  })
-  $el.on('change.select2', function(){ formData.value.fund_id = this.value || '' })
-  $el.val(formData.value.fund_id ? String(formData.value.fund_id) : '').trigger('change')
-}
-
 async function editModeData(category){
   if(!category) return
   editId.value = category.id ?? ''
   formData.value = {
     name: category.name ?? '',
-    code: category.code ?? '',
-    fund_id: category.fund_id ?? category.fund?.id ?? ''
+    code: category.code ?? ''
   }
-  if(!Array.isArray(funds.value) || funds.value.length===0){ await getFunds() }
   editModel.value = true
   await nextTick()
-  initSelect2Edit()
 }
 
-const updateFund = async () => {
+const updateCategory = async () => {
   isLoading.value = true
   try {
     const payload = {
       name: (formData.value.name || '').trim(),
-      code: (formData.value.code || '').trim(),
-      fund_id: formData.value.fund_id ? Number(formData.value.fund_id) : null
+      code: (formData.value.code || '').trim()
     }
     const { data } = await http.put(`/catagories/${editId.value}`, payload)
     const updatedFromApi = data?.data ?? data
     const idx = getCategory.value.findIndex(c => c.id === editId.value)
     if (idx !== -1) {
-      const fundObj = funds.value.find(f => String(f.id) === String(payload.fund_id))
       getCategory.value[idx] = {
         ...getCategory.value[idx],
         name: payload.name,
-        code: payload.code,
-        fund_id: payload.fund_id,
-        fund: fundObj ? fundObj : (updatedFromApi?.fund ?? getCategory.value[idx].fund)
+        code: payload.code
       }
+    } else if (updatedFromApi?.id) {
+      // fallback if API returns the whole object
+      const i2 = getCategory.value.findIndex(c => c.id === updatedFromApi.id)
+      if (i2 !== -1) getCategory.value[i2] = updatedFromApi
+      else await getCategories()
     } else {
       await getCategories()
     }
-    toast.success('Category updated successfully!')
+    toast.success(' category updated successfully!')
     editModel.value = false
     editId.value = null
-    formData.value = { name:'', fund_id:'', code:'' }
+    formData.value = { name:'', code:'' }
   } catch (error) {
     toast.error(error?.response?.data?.message || 'Failed to update category.')
   } finally {
@@ -487,44 +422,44 @@ const confirmDelete = async () => {
   isLoading.value = true
   try {
     const res = await http.delete(`/catagories/${deleteId.value}`)
+
+    // Remove deleted category instantly from list
     getCategory.value = getCategory.value.filter(c => c.id !== deleteId.value)
-    toast.success(res.data.message || "Category deleted successfully!")
+
+    // Success toast
+    toast.success(
+      res?.data?.message ?? "✅ Category deleted successfully!"
+    )
+
+    // Close modal and reset state
     deleteModel.value = false
     deleteId.value = null
   } catch (error) {
-    toast.error(error?.response?.data?.message || "Failed to delete category.")
+    // Extract cleaner message
+    const errMsg =
+      error?.response?.data?.message ||
+      error?.message ||
+      "❌ Something went wrong while deleting."
+
+    // Prevent long Laravel/stack traces in toast
+    const cleanMsg =
+      errMsg.length > 100
+        ? errMsg.slice(0, 100) + "..."
+        : errMsg
+
+    toast.error(cleanMsg)
   } finally {
     isLoading.value = false
   }
 }
 
+
 onMounted(async () => {
   await getCategories()
-  await getFunds()
   await nextTick()
 })
 
-// watchers for select2 lifecycle
-watch(createModal, async (open) => {
-  if (open) { await nextTick(); initSelect2Create() }
-  else if (createFundSelectRef.value) {
-    const $el = $(createFundSelectRef.value)
-    if ($el.data('select2')) { $el.off('change.select2'); $el.select2('destroy') }
-  }
-})
-watch(editModel, async (open) => {
-  if (open) { await nextTick(); initSelect2Edit() }
-  else if (editFundSelectRef.value) {
-    const $el = $(editFundSelectRef.value)
-    if ($el.data('select2')) { $el.off('change.select2'); $el.select2('destroy') }
-  }
-})
-watch(funds, async () => {
-  if (createModal.value) { await nextTick(); initSelect2Create() }
-  if (editModel.value)   { await nextTick(); initSelect2Edit() }
-})
-
-// filters & pagination
+// filters & pagination (NO fund filter)
 const filteredCategories = computed(() => {
   const list = getCategory.value || []
   const q = Search_Categories.value?.toLowerCase().trim() || ''
@@ -532,8 +467,7 @@ const filteredCategories = computed(() => {
   return list.filter(c => {
     const code = (c?.code || '').toString().toLowerCase()
     const name = (c?.name || '').toLowerCase()
-    const fund = (c?.fund?.fund || '').toLowerCase()
-    return code.includes(q) || name.includes(q) || fund.includes(q)
+    return code.includes(q) || name.includes(q)
   })
 })
 const visibleCategories = computed(() => {

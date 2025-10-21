@@ -13,10 +13,6 @@ return new class extends Migration
     {
         Schema::create('subcategories', function (Blueprint $table) {
          $table->id();
-
-            $table->unsignedBigInteger('fund_id');
-            $table->unsignedBigInteger('categorie_id');
-
             $table->string('sub_category', 255)->unique();
             $table->string('sub_category_code', 100)->nullable()->unique();
             $table->timestamps();

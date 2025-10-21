@@ -10,27 +10,17 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
+      {
         Schema::create('stock_purchases', function (Blueprint $table) {
-            $table->id();
+    $table->id();
+    $table->unsignedInteger('fund_id');
+    $table->unsignedInteger('supplier_id');
+    $table->string('memo_no', 64)->nullable();
+    $table->date('date');
+    $table->unsignedInteger('initial_qty');
+    $table->unsignedBigInteger('user_id');
+    $table->timestamps();
 
-            // Foreign key to stocks
-            $table->foreignId('stock_id')
-                  ->constrained('stocks')
-                  ->cascadeOnDelete();
-
-            // Purchase details
-            $table->date('date')->nullable();
-            $table->string('ref_no', 100)->nullable();
-
-            // Quantity and pricing
-            $table->unsignedInteger('purchase_qty')->default(0)->comment('Purchased quantity');
-            $table->decimal('unit_price', 15, 2)->default(0)->comment('Per-unit price');
-
-            $table->timestamps();
-
-            // Optional index for faster reporting
-            $table->index(['stock_id', 'date']);
         });
     }
 

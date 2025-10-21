@@ -4,13 +4,12 @@ namespace App\Models\Backend;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-class Catagory extends Model
+
+class Item extends Model
 {
     use HasFactory;
 
-     protected $fillable = [
-        'code',
-        'name',
-    ];
+
+   protected $fillable = ['item','code'];
 
 }

@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use App\Models\Backend\Catagory;
 use App\Models\Backend\Fund;
+use App\Models\Backend\Product;
 use App\Models\Stock;
 use App\Models\StockPurchase;
 use App\Models\StockValidity;
@@ -19,238 +20,172 @@ class StockController extends Controller
         return view('backend.Stock.create');
     }
 
-   public function create(Request $request) 
-    {
-
-        return response()->json($request->all());
-        $fundId     = $request->query('fund_id');
-        $categoryId = $request->query('category_id');
-
-        $q = Stock::with([
-            'fund:id,fund',
-            'category:id,name',
-            'purchases:id,stock_id,date,ref_no,purchase_qty',
-            'validity:id,stock_id,validity_start,validity_end,warranty_start,warranty_end'
-        ]);
-
-        if ($fundId)     $q->where('fund_id', $fundId);
-        if ($categoryId) $q->where('category_id', $categoryId);
-        $rows = $q->orderByDesc('id')->get();
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'Stock data loaded successfully',
-            'data'    => $rows,
-        ]);
-    }
-
-
-public function store(Request $request)
+public function create()
 {
-    $data = $request->validate([
-        'fund_id'        => ['required', 'integer', 'exists:funds,id'],
-        'category_id'    => ['required', 'integer', 'exists:catagories,id'],
-        'invoice_no'     => ['required', 'string', 'max:100'],
-        'date'           => ['nullable', 'date'],
-        'ref_no'         => ['nullable', 'string', 'max:100'],
-        'notes'          => ['nullable', 'string'],
-        'discount'       => ['nullable', 'numeric', 'min:0'],
-        'status'         => ['required', 'in:draft,final'],
+    $rows = DB::table('stocks')
+        ->join('stock_purchases', 'stock_purchases.id', '=', 'stocks.stock_purchase_id')
+        ->join('products', 'products.id', '=', 'stocks.product_id')
+        ->select([
+            'stocks.product_id',
+            'stock_purchases.fund_id',
+            'products.category_id',
+            DB::raw('SUM(stocks.qty) as total_qty'),
+        ])
+        ->groupBy('stocks.product_id', 'stock_purchases.fund_id', 'products.category_id')
+        ->get();
 
-        'validity_start' => ['nullable', 'date'],
-        'validity_end'   => ['nullable', 'date', 'after_or_equal:validity_start'],
-        'warranty_start' => ['nullable', 'date'],
-        'warranty_end'   => ['nullable', 'date', 'after_or_equal:warranty_start'],
+    $productIds  = $rows->pluck('product_id')->unique();
+    $fundIds     = $rows->pluck('fund_id')->unique();
+    $categoryIds = $rows->pluck('category_id')->unique();
 
-        'items'                  => ['required', 'array', 'min:1'],
-        'items.*.item_id'        => ['required', 'integer', 'exists:subcategories,id'],
-        'items.*.qty'            => ['required', 'numeric', 'min:1'],
-        'items.*.unit_price'     => ['required', 'numeric', 'min:0'],
+    $products  = Product::whereIn('id', $productIds)
+                    ->select('id','product','category_id','subCatagorie_id','unit')
+                    ->get()->keyBy('id');
+    $funds     = Fund::whereIn('id', $fundIds)
+                    ->select('id','fund') 
+                    ->get()->keyBy('id');
+    $categories= Catagory::whereIn('id', $categoryIds)
+                    ->select('id','name')
+                    ->get()->keyBy('id');
+
+    $data = $rows->map(function ($r) use ($products,$funds,$categories) {
+        return [
+            'product_id'   => $r->product_id,
+            'fund_id'      => $r->fund_id,
+            'category_id'  => $r->category_id,
+            'total_qty'    => (float) $r->total_qty,
+            'product'      => $products[$r->product_id] ?? null,
+            'fund'         => $funds[$r->fund_id] ?? null,
+            'category'     => $categories[$r->category_id] ?? null,
+        ];
+    })->values();
+
+    return response()->json([
+        'status'  => true,
+        'message' => 'Grouped stock data loaded successfully',
+        'data'    => $data,
+    ], 200);
+}
+
+
+
+public function store(Request $req)
+{
+    $data = $req->validate([
+        'fund_id'                    => ['required', 'integer', 'exists:funds,id'],
+        'supplier_id'                => ['required', 'integer', 'exists:suppliers,id'],
+        'memo_no'                    => ['nullable', 'string', 'max:64'],
+        'date'                       => ['required', 'date'],
+        'products'                   => ['required', 'array', 'min:1'],
+
+        'products.*.product_id'      => ['required', 'integer', 'exists:products,id'],
+        'products.*.qty'             => ['required', 'integer', 'min:1'],
+
+        'products.*.warranty_start'  => ['nullable', 'date'],
+        'products.*.warranty_end'    => ['nullable', 'date'],
+
+        'products.*.validity_start'  => ['nullable', 'date'],
+        'products.*.validity_end'    => ['nullable', 'date'],
     ]);
 
-    DB::beginTransaction();
-
-    try {
-        $subTotal = 0;
-        $result = [];
-
-        foreach ($data['items'] as $li) {
-            $qty = (int) $li['qty']; 
-            $unitPrice = round((float) $li['unit_price'], 2);
-            $lineTotal = round($qty * $unitPrice, 2);
-            $subTotal += $lineTotal;
-
-            $date = $data['date'] ?? now();
-            $ref  = $data['ref_no'] ?? null;
-
-            $stock = Stock::firstOrCreate(
-                [
-                    'fund_id'     => $data['fund_id'],
-                    'category_id' => $data['category_id'],
-                    'item_id'     => (int) $li['item_id'],
-                ],
-                ['qty' => 0]
-            );
-
-            $purchase = StockPurchase::create([
-                'stock_id'     => $stock->id,
-                'date'         => $date,
-                'ref_no'       => $ref,
-                'purchase_qty' => $qty,
-                'unit_price'   => $unitPrice,
-            ]);
-            $stock->increment('qty', $qty);
-
-            StockValidity::updateOrCreate(
-                ['stock_id' => $stock->id],
-                [
-                    'validity_start' => $data['validity_start'] ?? null,
-                    'validity_end'   => $data['validity_end'] ?? null,
-                    'warranty_start' => $data['warranty_start'] ?? null,
-                    'warranty_end'   => $data['warranty_end'] ?? null,
-                ]
-            );
-
-            $result[] = [
-                'stock_id'     => $stock->id,
-                'purchase_id'  => $purchase->id,
-                'item_id'      => $li['item_id'],
-                'qty_added'    => $qty,
-                'unit_price'   => $unitPrice,
-                'line_total'   => $lineTotal,
-            ];
+    // Optional manual compare (start <= end)
+    foreach ($data['products'] as $p) {
+        if (!empty($p['warranty_start']) && !empty($p['warranty_end']) && $p['warranty_end'] < $p['warranty_start']) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Warranty end date must be after or equal to warranty start date.',
+            ], 422);
         }
-        $discount = round($data['discount'] ?? 0, 2);
-        $grandTotal = max(0, round($subTotal - $discount, 2));
+        if (!empty($p['validity_start']) && !empty($p['validity_end']) && $p['validity_end'] < $p['validity_start']) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validity end date must be after or equal to validity start date.',
+            ], 422);
+        }
+    }
+
+    DB::beginTransaction();
+    try {
+        $totalQty = collect($data['products'])->sum('qty');
+
+        $purchase = StockPurchase::create([
+            'fund_id'     => $data['fund_id'],
+            'supplier_id' => $data['supplier_id'],
+            'memo_no'     => $data['memo_no'] ?? null,
+            'date'        => $data['date'],
+            'initial_qty' => $totalQty,
+            'user_id'     => auth()->id(),
+        ]);
+
+        foreach ($data['products'] as $product) {
+            $stock = Stock::create([
+                'stock_purchase_id' => $purchase->id,
+                'product_id'        => $product['product_id'],
+                'qty'               => $product['qty'],
+                'avl_qty'               => $product['qty'],
+            ]);
+
+            StockValidity::create([
+                'stock_purchase_id' => $purchase->id,
+                'stock_id'          => $stock->id,
+                'warranty_start'    => $product['warranty_start'] ?? null,
+                'warranty_end'      => $product['warranty_end'] ?? null,
+                'validity_start'    => $product['validity_start'] ?? null,
+                'validity_end'      => $product['validity_end'] ?? null,
+            ]);
+        }
 
         DB::commit();
 
         return response()->json([
-            'success' => true,
-            'message' => '✅ Stock & Purchase successfully saved.',
-            'summary' => [
-                'sub_total'   => round($subTotal, 2),
-                'discount'    => $discount,
-                'grand_total' => $grandTotal,
-            ],
-            'data' => $result,
-        ], 201);
-
+            'status'  => true,
+            'message' => 'Stock saved successfully',
+            'data'    => $purchase->load(['stocks.validity', 'stocks.product', 'fund', 'supplier']),
+        ]);
     } catch (\Throwable $e) {
         DB::rollBack();
         return response()->json([
-            'success' => false,
-            'message' => '❌ Error: ' . $e->getMessage(),
-        ], 500);
+            'status'  => false,
+            'message' => 'Save failed',
+            'error'   => $e->getMessage(),
+            'file'    => $e->getFile(),  // 👈 add
+            'line'    => $e->getLine(),  // 👈 add
+        ], 422);
     }
 }
 
 
-    public function update(Request $request, $id)
-    {
-        $data = $request->validate([
-            'fund_id'        => ['required','integer','exists:funds,id'],
-            'category_id'    => ['required','integer','exists:catagories,id'],
-            'item_id'        => ['required','integer'],
-            'purchase_qty'   => ['required','integer','min:0'],
 
-            'purchase_id'    => ['nullable','integer','exists:stock_purchases,id'],
 
-            'date'           => ['nullable','date'],
-            'ref_no'         => ['nullable','string','max:100'],
-            'validity_start' => ['nullable','date'],
-            'validity_end'   => ['nullable','date','after_or_equal:validity_start'],
-            'warranty_start' => ['nullable','date'],
-            'warranty_end'   => ['nullable','date','after_or_equal:warranty_start'],
-        ]);
-
-        $uniqueTupleRule = Rule::unique('stocks')
-            ->where(fn($q) => $q
-                ->where('fund_id', $data['fund_id'])
-                ->where('category_id', $data['category_id'])
-                ->where('item_id', $data['item_id'])
-            )
-            ->ignore($id);
-
-        $request->validate([
-            'tuple' => [$uniqueTupleRule],
-        ], [
-            'tuple.unique' => 'A stock row already exists for this Fund + Category + Item.',
-        ]);
-
-        $payload = DB::transaction(function () use ($data, $id) {
-            $stock = Stock::lockForUpdate()->findOrFail($id);
-
-            // update tuple
-            $stock->update([
-                'fund_id'     => (int) $data['fund_id'],
-                'category_id' => (int) $data['category_id'],
-                'item_id'     => (int) $data['item_id'],
-            ]);
-
-            $purchaseLookup = ['stock_id' => $stock->id];
-            if (!empty($data['purchase_id'])) {
-                $purchaseLookup['id'] = (int) $data['purchase_id'];
-            }
-
-            $purchase = StockPurchase::updateOrCreate(
-                $purchaseLookup,
-                [
-                    'date'         => $data['date']        ?? now()->toDateString(),
-                    'ref_no'       => $data['ref_no']      ?? null,
-                    'purchase_qty' => (int) $data['purchase_qty'],
-                ]
-            );
-            $validity = StockValidity::updateOrCreate(
-                ['stock_id' => $stock->id],
-                [
-                    'validity_start' => $data['validity_start'] ?? null,
-                    'validity_end'   => $data['validity_end']   ?? null,
-                    'warranty_start' => $data['warranty_start'] ?? null,
-                    'warranty_end'   => $data['warranty_end']   ?? null,
-                ]
-            );
-
-            $totalQty = (int) StockPurchase::where('stock_id', $stock->id)->sum('purchase_qty');
-            $stock->update(['qty' => $totalQty]);
-
-            $stock->load([
-                'fund:id,fund',
-                'category:id,name',
-                'purchases:id,stock_id,date,ref_no,purchase_qty',
-                'validity:id,stock_id,validity_start,validity_end,warranty_start,warranty_end',
-            ]);
-
-            return compact('stock','purchase','validity');
-        });
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'Stock updated successfully.',
-            'data'    => $payload,
-        ], 200);
-    }
-public function destroy($id)
+public function show($id)
 {
-    try {
-        DB::transaction(function () use ($id) {
+    $stock = StockPurchase::with([
+        'fund',
+        'supplier',
+        'stocks.product.country',    
+        'stocks.product.category',    
+        'stocks.product.subcategory', 
+        'stocks.validity',            
+    ])->findOrFail($id);
+
+    return view('backend.Stock.stock_details', compact('stock'));
+}
+
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+        try {
             $stock = Stock::findOrFail($id);
-            StockPurchase::where('stock_id', $stock->id)->delete();
             StockValidity::where('stock_id', $stock->id)->delete();
             $stock->delete();
-        });
-        
-        return response()->json([
-            'status'  => true,
-            'message' => 'Stock and related records deleted successfully.'
-        ], 200);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status'  => false,
-            'message' => $e->getMessage()
-        ], 500);
+            DB::commit();
+            return response()->json(['status'=>true,'message'=>'Deleted successfully']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            report($e);
+            return response()->json(['status'=>false,'message'=>'Delete failed'], 422);
+        }
     }
-}
 
 
 }

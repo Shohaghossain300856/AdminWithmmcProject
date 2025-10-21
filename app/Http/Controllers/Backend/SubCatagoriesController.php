@@ -19,9 +19,7 @@ class SubCatagoriesController extends Controller
 
 public function create()
 {
-    $items = Subcategorie::with(['fund:id,fund', 'category:id,name'])
-        ->latest()
-        ->get();
+    $items = Subcategorie::latest()->get();
 
     return response()->json([
         'status'  => true,
@@ -45,8 +43,6 @@ public function store(Request $request)
 {
 
     $data = $request->validate([
-        'fund_id'           => ['required', 'integer', 'exists:funds,id'],
-        'categorie_id'      => ['required', 'integer', 'exists:catagories,id'],
         'sub_category'      => [
             'required', 'string', 'max:255',
             Rule::unique('subcategories', 'sub_category')
@@ -72,12 +68,8 @@ public function store(Request $request)
 
 public function update(Request $request, $id)
 {
-    // ✅ Find existing row
     $row = Subcategorie::findOrFail($id);
-
     $data = $request->validate([
-        'fund_id' => ['required', 'integer', 'exists:funds,id'],
-        'categorie_id' => ['required', 'integer', 'exists:catagories,id'],
         'sub_category' => [
             'required', 'string', 'max:255',
             Rule::unique('subcategories', 'sub_category')->ignore($id),

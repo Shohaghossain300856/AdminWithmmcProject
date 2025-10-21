@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Models\Backend;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-class Catagory extends Model
+
+class Country extends Model
 {
     use HasFactory;
 
-     protected $fillable = [
-        'code',
-        'name',
-    ];
+      protected $fillable = [
 
+        'name', 'code'
+
+    ];
 }

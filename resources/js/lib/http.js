@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const http = axios.create({
-  baseURL: "http://localhost:8000/backend/", // এখানে আপনার Laravel এর root URL
+  baseURL: "http://localhost:8000/backend/", 
   headers: {
     "X-Requested-With": "XMLHttpRequest",
     "Accept": "application/json",
