@@ -88,7 +88,6 @@ public function store(Request $req)
         'products.*.validity_end'    => ['nullable', 'date'],
     ]);
 
-    // Optional manual compare (start <= end)
     foreach ($data['products'] as $p) {
         if (!empty($p['warranty_start']) && !empty($p['warranty_end']) && $p['warranty_end'] < $p['warranty_start']) {
             return response()->json([
@@ -153,9 +152,6 @@ public function store(Request $req)
         ], 422);
     }
 }
-
-
-
 
 public function show($id)
 {

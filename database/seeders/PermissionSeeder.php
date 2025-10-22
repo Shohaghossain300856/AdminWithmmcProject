@@ -42,6 +42,8 @@ class PermissionSeeder extends Seeder
             'stock management',
             'stock',
             'stock list',
+            'report management',
+            'stock reports',
         ];
 
         foreach ($permissions as $permission) {

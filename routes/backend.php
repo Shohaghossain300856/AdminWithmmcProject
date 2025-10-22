@@ -16,6 +16,7 @@ use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\StockListController;
 use App\Http\Controllers\Backend\CountryController;
 use App\Http\Controllers\PdfController;
+use App\Http\Controllers\StockReportController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -78,6 +79,7 @@ Route::middleware(['auth','checkUserStatus'])->group(function () {
 
       Route::resource('Supplier', SupplierController::class);
       Route::resource('product', ProductController::class);
+      Route::resource('stock-reports', StockReportController::class);
 
 
 Route::get('/subcategoriespdf', [PdfController::class, 'Subcategoriespdf'])->name('subcategoriespdf');

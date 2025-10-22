@@ -1,13 +1,49 @@
 <!-- resources/js/components/Backend/Subcategories/index.vue -->
 <template>
   <div class="container-xxl flex-grow-1 container-p-y">
-    <div class="card-body">
-      <!-- Header & Add New Button -->
-      <div class="d-flex align-items-center mb-5">
-        <h5 class="card-header mb-0">Categories Management</h5>
-        <button @click="openModal" type="button" class="btn btn-primary ms-auto">
-          <i class="fa fa-plus me-2"></i> Add New
-        </button>
+    <!-- Header (new styled like Stock Summary) -->
+    <div class="card mb-3">
+      <div class="card-body d-flex align-items-center gap-2 flex-wrap">
+        <h5 class="mb-0 d-flex align-items-center gap-2">
+          <i class="fa fa-tags me-2"></i> Categories Management
+        </h5>
+
+        <!-- Count -->
+        <span class="badge bg-primary ms-2">
+          {{ filteredCategories.length }} Items
+        </span>
+
+        <!-- Right controls -->
+        <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+          <!-- Search -->
+          <div class="input-group input-group-sm w-auto">
+            <span class="input-group-text"><i class="fa fa-search"></i></span>
+            <input
+              v-model.trim="Search_Categories"
+              class="form-control"
+              placeholder="Search code or name…"
+            />
+          </div>
+
+          <!-- Per page -->
+          <select v-model.number="itemsPerPage" class="form-select form-select-sm w-auto">
+            <option :value="10">10 / page</option>
+            <option :value="25">25 / page</option>
+            <option :value="50">50 / page</option>
+            <option :value="100">100 / page</option>
+          </select>
+
+          <!-- Refresh -->
+          <button class="btn btn-sm btn-outline-primary" @click="getCategories" :disabled="isLoading">
+            <i :class="['fa', isLoading ? 'fa-spinner fa-spin' : 'fa-rotate']"></i>
+            <span class="ms-1">{{ isLoading ? 'Loading…' : 'Refresh' }}</span>
+          </button>
+
+          <!-- Add New -->
+          <button @click="openModal" type="button" class="btn btn-primary btn-sm">
+            <i class="fa fa-plus me-2"></i>Add New
+          </button>
+        </div>
       </div>
     </div>
 
@@ -16,129 +52,117 @@
 
     <div class="card">
       <div class="card-datatable text-nowrap">
-        <!-- Search + ItemsPerPage -->
-        <div class="row m-2">
-          <div class="col-sm-6 col-md-9 mt-1">
-            <div class="dataTables_filter">
-              <label>
-                Search
-                <input
-                  type="search"
-                  class="form-control"
-                  placeholder="Search by code or name"
-                  v-model="Search_Categories"
-                />
-              </label>
-            </div>
+        <!-- ===== Table (styled like Stock Summary) ===== -->
+        <div class="table-scroll">
+          <table class="table table-hover align-middle mb-0 subcat-table">
+            <thead class="table-head">
+              <tr>
+                <th style="width:70px">Sl</th>
+                <th class="sortable">Code <i class="fa fa-sort ms-1"></i></th>
+                <th class="sortable">Category <i class="fa fa-sort ms-1"></i></th>
+                <th class="text-end" style="width:180px;">Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- Rows -->
+              <tr v-for="(category, index) in visibleCategories" :key="category.id">
+                <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
+                <td>{{ category.code || '—' }}</td>
+                <td>{{ category.name || '—' }}</td>
+                <td class="text-end">
+                  <button @click="editModeData(category)" class="btn btn-sm btn-primary me-2" title="Edit">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button @click="DeleteModeData(category.id)" class="btn btn-sm btn-danger btn-danger-glow" title="Delete">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+
+              <!-- No matches -->
+              <tr v-if="!isLoading && getCategory.length > 0 && filteredCategories.length === 0">
+                <td colspan="4" class="text-center text-muted py-4">
+                  No categories found matching your search criteria.
+                </td>
+              </tr>
+
+              <!-- No data -->
+              <tr v-if="getCategory.length === 0 && !isLoading">
+                <td colspan="4" class="text-center text-muted py-4">
+                  No categories found. Please add some categories.
+                </td>
+              </tr>
+
+              <!-- Inline loader fallback -->
+              <tr v-if="isLoading">
+                <td colspan="4" class="text-center py-4">
+                  <i class="fa fa-spinner fa-spin me-2"></i> Loading categories...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- /Table -->
+
+        <!-- ===== Pagination (same compact footer style) ===== -->
+        <div class="card-footer d-flex align-items-center justify-content-between" v-if="!isLoading && filteredCategories.length">
+          <div class="text-muted small">
+            Showing {{ showingInfo.start }}–{{ showingInfo.end }} of {{ showingInfo.total }} items
+            <span v-if="Search_Categories.trim() && filteredCategories.length !== getCategory.length">
+              (filtered from {{ getCategory.length }} total)
+            </span>
           </div>
 
-          <div class="col-sm-6 col-md-3 mt-5">
-            <div class="text-end dataTables_length d-flex gap-2 justify-content-end">
-              <label class="mt-2">Show</label>
-              <select v-model.number="itemsPerPage" class="form-select" style="max-width: 90px">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-              </select>
-              <label class="mt-2">entries</label>
+          <div class="d-flex align-items-center gap-2">
+            <select v-model.number="itemsPerPage" class="form-select form-select-sm w-auto">
+              <option :value="10">10 / page</option>
+              <option :value="25">25 / page</option>
+              <option :value="50">50 / page</option>
+              <option :value="100">100 / page</option>
+            </select>
+
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-secondary" :disabled="currentPage === 1" @click="previousPage">
+                <i class="fa fa-chevron-left"></i>
+              </button>
+
+              <!-- first + left ellipsis -->
+              <button
+                v-if="visiblePages[0] > 1"
+                class="btn btn-outline-secondary"
+                @click="goToPage(1)"
+              >1</button>
+              <button v-if="visiblePages[0] > 2" class="btn btn-outline-secondary" disabled>…</button>
+
+              <!-- windowed pages -->
+              <button
+                v-for="p in visiblePages"
+                :key="p"
+                class="btn"
+                :class="p === currentPage ? 'btn-primary' : 'btn-outline-secondary'"
+                @click="goToPage(p)"
+              >{{ p }}</button>
+
+              <!-- right ellipsis + last -->
+              <button
+                v-if="visiblePages[visiblePages.length - 1] < totalPages - 1"
+                class="btn btn-outline-secondary"
+                disabled
+              >…</button>
+              <button
+                v-if="visiblePages[visiblePages.length - 1] < totalPages"
+                class="btn btn-outline-secondary"
+                @click="goToPage(totalPages)"
+              >{{ totalPages }}</button>
+
+              <button class="btn btn-outline-secondary" :disabled="currentPage === totalPages" @click="nextPage">
+                <i class="fa fa-chevron-right"></i>
+              </button>
             </div>
           </div>
         </div>
-
-        <!-- ===== Table ===== -->
-        <div class="card-datatable text-nowrap">
-          <div class="table-scroll">
-            <table class="table p_table">
-              <thead class="p_thead">
-                <tr>
-                  <th>Sl</th>
-                  <th>Code</th>
-                  <th>Category</th>
-                  <th style="width:180px;">Action</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <!-- Rows -->
-                <tr v-for="(category, index) in visibleCategories" :key="category.id">
-                  <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
-                  <td>{{ category.code || '—' }}</td>
-                  <td>{{ category.name || '—' }}</td>
-                  <td class="p_actions">
-                    <button @click="editModeData(category)" class="btn btn-sm btn-primary me-2" title="Edit">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                    <button @click="DeleteModeData(category.id)" class="btn btn-sm btn-danger btn-danger-glow" title="Delete">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-
-                <!-- No matches -->
-                <tr v-if="!isLoading && getCategory.length > 0 && filteredCategories.length === 0">
-                  <td colspan="4" class="text-center text-muted">
-                    No categories found matching your search criteria.
-                  </td>
-                </tr>
-
-                <!-- No data -->
-                <tr v-if="getCategory.length === 0 && !isLoading">
-                  <td colspan="4" class="text-center text-muted">
-                    No categories found. Please add some categories.
-                  </td>
-                </tr>
-
-                <!-- Inline loader fallback -->
-                <tr v-if="isLoading">
-                  <td colspan="4" class="text-center">
-                    <div class="spinner-border spinner-border-sm" role="status">
-                      <span class="visually-hidden">Loading...</span>
-                    </div>
-                    Loading categories...
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Pagination + Showing info -->
-        <div class="row align-items-center p-3">
-          <div class="col-md-6 mb-2 mb-md-0">
-            <div class="dataTables_info">
-              Showing {{ showingInfo.start }} to {{ showingInfo.end }} of {{ showingInfo.total }} entries
-            </div>
-          </div>
-          <div class="col-md-6">
-            <nav class="d-flex justify-content-md-end">
-              <ul class="pagination mb-0">
-                <li :class="['page-item', { disabled: currentPage === 1 }]">
-                  <a class="page-link" href="javascript:void(0)" @click="goToPage(1)">First</a>
-                </li>
-                <li :class="['page-item', { disabled: currentPage === 1 }]">
-                  <a class="page-link" href="javascript:void(0)" @click="previousPage">Prev</a>
-                </li>
-
-                <li
-                  v-for="p in visiblePages"
-                  :key="p"
-                  :class="['page-item', { active: currentPage === p }]"
-                >
-                  <a class="page-link" href="javascript:void(0)" @click="goToPage(p)">{{ p }}</a>
-                </li>
-
-                <li :class="['page-item', { disabled: currentPage === totalPages }]">
-                  <a class="page-link" href="javascript:void(0)" @click="nextPage">Next</a>
-                </li>
-                <li :class="['page-item', { disabled: currentPage === totalPages }]">
-                  <a class="page-link" href="javascript:void(0)" @click="goToPage(totalPages)">Last</a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-
+        <!-- /Pagination -->
       </div>
     </div>
   </div>
@@ -154,48 +178,24 @@
     aria-labelledby="createTitle"
   >
     <div class="modal-card animate-pop">
-      <!-- Header -->
       <div class="modal-header">
         <h5 id="createTitle" class="m-0">Add New  Category</h5>
         <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
       </div>
-
-      <!-- Body -->
       <div class="modal-body">
         <form @submit.prevent="SubmitCatagories">
-          <!-- Code -->
           <div class="mb-3">
             <label for="catCode" class="form-label">Category Code</label>
-            <input
-              id="catCode"
-              type="text"
-              v-model="formData.code"
-              class="form-control"
-              placeholder="Enter code"
-            />
-            <small v-if="formErrors.code" class="text-danger">
-              {{ formErrors.code[0] }}
-            </small>
+            <input id="catCode" type="text" v-model="formData.code" class="form-control" placeholder="Enter code" />
+            <small v-if="formErrors.code" class="text-danger">{{ formErrors.code[0] }}</small>
           </div>
-
-          <!-- Name -->
           <div class="mb-3">
             <label for="catName" class="form-label">Category Name</label>
-            <input
-              id="catName"
-              type="text"
-              v-model="formData.name"
-              class="form-control"
-              placeholder="Enter category name"
-            />
-            <small v-if="formErrors.name" class="text-danger">
-              {{ formErrors.name[0] }}
-            </small>
+            <input id="catName" type="text" v-model="formData.name" class="form-control" placeholder="Enter category name" />
+            <small v-if="formErrors.name" class="text-danger">{{ formErrors.name[0] }}</small>
           </div>
         </form>
       </div>
-
-      <!-- Footer -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" @click="closeModal" :disabled="isLoading">Cancel</button>
         <button type="button" class="btn btn-primary" @click="SubmitCatagories" :disabled="isLoading">
@@ -217,36 +217,22 @@
     aria-labelledby="editTitle"
   >
     <div class="modal-card animate-pop">
-      <!-- Header -->
       <div class="modal-header">
         <h5 id="editTitle" class="m-0">Edit Category</h5>
         <button type="button" class="btn-close" @click="editModel = false" aria-label="Close"></button>
       </div>
-
-      <!-- Body -->
       <div class="modal-body">
         <form @submit.prevent="updateCategory">
-          <!-- Code -->
           <div class="mb-3">
             <label for="editCatCode" class="form-label">Category Code</label>
-            <input
-              id="editCatCode"
-              type="text"
-              v-model="formData.code"
-              class="form-control"
-              placeholder="Enter code"
-            />
+            <input id="editCatCode" type="text" v-model="formData.code" class="form-control" placeholder="Enter code" />
           </div>
-
-          <!-- Name -->
           <div class="mb-3">
             <label class="form-label">Category Name</label>
             <input type="text" class="form-control" v-model="formData.name" placeholder="Name" required />
           </div>
         </form>
       </div>
-
-      <!-- Footer -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" @click="editModel = false" :disabled="isLoading">Cancel</button>
         <button type="button" class="btn btn-primary" @click="updateCategory" :disabled="isLoading">
@@ -267,7 +253,6 @@
     @keydown.esc="deleteModel = false"
   >
     <div class="modal-card animate-pop">
-      <!-- Header (danger variant) -->
       <div class="modal-header danger">
         <div class="d-flex align-items-center gap-2">
           <i class="fas fa-exclamation-triangle"></i>
@@ -275,29 +260,20 @@
         </div>
         <button @click="deleteModel = false" type="button" class="btn-close btn-close-white" aria-label="Close"></button>
       </div>
-
-      <!-- Body -->
       <div class="modal-body">
         <div class="d-flex align-items-start gap-3">
           <div class="danger-chip">Delete</div>
           <div class="flex-grow-1">
             <p class="mb-1 fs-6 text-muted">You’re about to permanently delete this item.</p>
-            <p class="mb-0 fw-medium">
-              ID: <span class="text-dark">{{ deleteId }}</span>
-            </p>
+            <p class="mb-0 fw-medium">ID: <span class="text-dark">{{ deleteId }}</span></p>
           </div>
         </div>
-        <div class="small text-muted mt-3">
-          This action cannot be undone. Please confirm to proceed.
-        </div>
+        <div class="small text-muted mt-3">This action cannot be undone. Please confirm to proceed.</div>
       </div>
-
-      <!-- Footer -->
       <div class="modal-footer">
         <button type="button" @click="deleteModel = false" class="btn btn-secondary">Cancel</button>
         <button type="button" @click="confirmDelete()" class="btn btn-danger btn-danger-glow">
-          <span class="me-2"><i class="fas fa-trash"></i></span>
-          Delete Item
+          <span class="me-2"><i class="fas fa-trash"></i></span> Delete Item
         </button>
       </div>
     </div>
@@ -330,7 +306,7 @@ const Search_Categories = ref('')
 const itemsPerPage = ref(10)
 const currentPage = ref(1)
 
-// form (NO fund_id anymore)
+// form
 const formData = ref({ name:'', code:'' })
 
 function openModal(){ createModal.value = true }
@@ -393,13 +369,8 @@ const updateCategory = async () => {
     const updatedFromApi = data?.data ?? data
     const idx = getCategory.value.findIndex(c => c.id === editId.value)
     if (idx !== -1) {
-      getCategory.value[idx] = {
-        ...getCategory.value[idx],
-        name: payload.name,
-        code: payload.code
-      }
+      getCategory.value[idx] = { ...getCategory.value[idx], name: payload.name, code: payload.code }
     } else if (updatedFromApi?.id) {
-      // fallback if API returns the whole object
       const i2 = getCategory.value.findIndex(c => c.id === updatedFromApi.id)
       if (i2 !== -1) getCategory.value[i2] = updatedFromApi
       else await getCategories()
@@ -422,44 +393,25 @@ const confirmDelete = async () => {
   isLoading.value = true
   try {
     const res = await http.delete(`/catagories/${deleteId.value}`)
-
-    // Remove deleted category instantly from list
     getCategory.value = getCategory.value.filter(c => c.id !== deleteId.value)
-
-    // Success toast
-    toast.success(
-      res?.data?.message ?? "✅ Category deleted successfully!"
-    )
-
-    // Close modal and reset state
+    toast.success(res?.data?.message ?? "✅ Category deleted successfully!")
     deleteModel.value = false
     deleteId.value = null
   } catch (error) {
-    // Extract cleaner message
-    const errMsg =
-      error?.response?.data?.message ||
-      error?.message ||
-      "❌ Something went wrong while deleting."
-
-    // Prevent long Laravel/stack traces in toast
-    const cleanMsg =
-      errMsg.length > 100
-        ? errMsg.slice(0, 100) + "..."
-        : errMsg
-
+    const errMsg = error?.response?.data?.message || error?.message || "❌ Something went wrong while deleting."
+    const cleanMsg = errMsg.length > 100 ? errMsg.slice(0, 100) + "..." : errMsg
     toast.error(cleanMsg)
   } finally {
     isLoading.value = false
   }
 }
 
-
 onMounted(async () => {
   await getCategories()
   await nextTick()
 })
 
-// filters & pagination (NO fund filter)
+// filters & pagination
 const filteredCategories = computed(() => {
   const list = getCategory.value || []
   const q = Search_Categories.value?.toLowerCase().trim() || ''
@@ -498,113 +450,30 @@ const nextPage = () => { if(currentPage.value<totalPages.value) currentPage.valu
 </script>
 
 <style scoped>
-.my-toast {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-  color: #fff !important;
-  font-weight: bold;
-  border-radius: 8px;
-}
+/* Table polish (Stock Summary style) */
+.table-scroll { overflow-x: auto; max-width: 100%; }
+.table thead th { color: #fff; position: sticky; top: 0; z-index: 1; }
+.table-head { background: #7367f0; color: #fff; }
+.sortable { cursor: pointer; user-select: none; }
+.input-group .form-control { min-width: 260px; }
+.badge { font-weight: 600; }
+.subcat-table tfoot th { background: #f5f6f8; }
 
-/* ===== Reusable modal design (matches your confirm modal) ===== */
-.modal-backdrop{
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.5);
-  display: grid; place-items: center;
-  padding: 16px;
-  z-index: 9999;
-}
-.modal-card{
-  background: #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 15px 40px rgba(0,0,0,.25);
-}
-.modal-header{
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px;
-  border-bottom: 1px solid #eef0f3;
-  background: linear-gradient(135deg, #f8f9ff, #eef2ff);
-}
-.modal-header.danger{
-  color:#fff;
-  background: linear-gradient(135deg, #ef4444, #b91c1c);
-  border-bottom-color: transparent;
-}
-.modal-body{ padding: 16px; }
-.modal-footer{
-  display: flex; gap: 10px; justify-content: flex-end;
-  padding: 12px 16px; border-top: 1px solid #eef0f3;
-}
+/* Modal system */
+.modal-backdrop{ position:fixed; inset:0; display:grid; place-items:center; background:rgba(15,18,30,.55); z-index:99999; padding:12px; }
+.modal-card{ width:min(640px,96vw); background:#fff; border-radius:14px; box-shadow:0 10px 30px rgba(0,0,0,.25); overflow:hidden; max-height:92vh; display:flex; flex-direction:column; position:relative; }
+.modal-header{ position:sticky; top:0; z-index:10; background:#fff; flex:0 0 auto; padding:12px 16px; display:flex; align-items:center; gap:12px; justify-content:space-between; border-bottom:1px solid #f0f0f0; }
+.modal-header.danger{ background:#fff5f5; border-bottom-color:#fecaca; }
+.modal-body{ flex:1 1 auto; min-height:0; overflow:auto; padding:16px; background:#fff; }
+.modal-footer{ flex:0 0 auto; padding:12px 16px; display:flex; align-items:center; gap:12px; border-top:1px solid #f0f0f0; background:#fff; }
 
-/* Subtle pop-in animation */
-@keyframes pop {
-  0% { transform: scale(.96); opacity: 0; }
-  100%{ transform: scale(1); opacity: 1; }
-}
-.animate-pop{ animation: pop .15s ease-out; }
-
-/* Little red chip label */
-.danger-chip {
-  background: #fee2e2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  letter-spacing: .3px;
-}
-
-/* Glow + press effect on Delete */
-.btn-danger-glow {
-  box-shadow: 0 8px 20px rgba(239, 68, 68, .35);
-  transition: transform .08s ease, box-shadow .2s ease;
-}
-.btn-danger-glow:active {
-  transform: translateY(1px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, .25);
-}
-
-/* === SMX table look (same as your other page) === */
-.table-scroll{
-  max-height:65vh;
-  overflow:auto;
-  border:1px solid rgba(0,0,0,.08);
-  border-radius:.5rem;
-}
-
-/* Purple header */
-.p_thead th{
-  background:#7367f0 !important;
-  color:#fff !important;
-  text-transform:uppercase;
-  font-size:.8125rem;
-  letter-spacing:.2px;
-  position:sticky;
-  top:0;
-  z-index:2;
-}
-.p_table th, .p_table td{
-  vertical-align:middle;
-  padding:.65rem .8rem;
-  white-space:nowrap;
-  border-bottom:1px solid #eef0f4;
-}
-
-.p_table tbody tr:nth-child(odd){ background:#fcfcff; }
-.p_table tbody tr:hover{ background:#f6f7ff; }
-
-.p_actions{ display:flex; align-items:center; gap:.5rem; }
-.btn{
-  display:inline-flex; align-items:center; justify-content:center; gap:6px;
-  height:34px; padding:0 10px; border-radius:8px; border:1px solid transparent;
-  font-weight:600; cursor:pointer; background:#f3f4f6; color:#111827;
-  transition:transform .12s ease, filter .12s ease, background .12s ease;
-}
+/* Buttons */
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; height:34px; padding:0 12px; border-radius:8px; border:1px solid transparent; font-weight:600; cursor:pointer; background:#f3f4f6; color:#111827; transition:transform .12s ease, filter .12s ease, background .12s ease; }
 .btn:hover{ background:#e5e7eb; }
-.btn-sm{ height:32px; padding:0 10px; font-size:.875rem; border-radius:8px; }
+.btn:disabled{ opacity:.6; cursor:not-allowed; }
 .btn-primary{ background:#7367f0; color:#fff; box-shadow:0 6px 14px rgba(115,103,240,.25); }
 .btn-primary:hover{ filter:brightness(1.05); transform:translateY(-1px); }
 .btn-danger{ background:#ef4444; color:#fff; }
 .btn-danger:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+.btn-warning{ background:#facc15; color:#000; }
 </style>

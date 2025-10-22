@@ -1,144 +1,177 @@
 <template>
   <div class="container-xxl flex-grow-1 container-p-y">
-    <!-- Header & Add -->
-    <div class="card-body">
-      <div class="d-flex align-items-center mb-5">
-        <h5 class="card-header mb-0">Fund Management</h5>
-        <button @click="openCreate" type="button" class="btn btn-primary ms-auto">
-          <i class="fa fa-plus me-2"></i>Add New
-        </button>
+    <!-- Header -->
+    <div class="card mb-3">
+      <div class="card-body d-flex align-items-center gap-2 flex-wrap">
+        <h5 class="mb-0 d-flex align-items-center gap-2">
+          <i class="fa fa-coins me-2"></i> Fund Management
+        </h5>
+
+        <!-- Counts -->
+        <span class="badge bg-primary ms-2">
+          {{ filteredFund.length }} Items
+        </span>
+
+        <!-- Search -->
+        <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+          <div class="input-group input-group-sm w-auto">
+            <span class="input-group-text"><i class="fa fa-search"></i></span>
+            <input
+              v-model.trim="Search_fund"
+              class="form-control"
+              placeholder="Search fund name…"
+            />
+          </div>
+
+          <!-- Per page -->
+          <select v-model.number="itemsPerPage" class="form-select form-select-sm w-auto">
+            <option :value="10">10 / page</option>
+            <option :value="25">25 / page</option>
+            <option :value="50">50 / page</option>
+            <option :value="100">100 / page</option>
+          </select>
+
+          <!-- Refresh -->
+          <button class="btn btn-sm btn-outline-primary" @click="getFunds" :disabled="loader || isLoading">
+            <i :class="['fa', (loader || isLoading) ? 'fa-spinner fa-spin' : 'fa-rotate']"></i>
+            <span class="ms-1">{{ (loader || isLoading) ? 'Loading…' : 'Refresh' }}</span>
+          </button>
+
+          <!-- Add New -->
+          <button @click="openCreate" type="button" class="btn btn-primary btn-sm">
+            <i class="fa fa-plus me-2"></i>Add New
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Full-page Loader -->
     <Loading :active="isLoading" :is-full-page="true" />
 
+    <!-- Table Card -->
     <div class="card">
       <div class="card-datatable text-nowrap">
-        <!-- Search + ItemsPerPage -->
-        <div class="row m-2">
-          <div class="col-sm-6 col-md-9 mt-1">
-            <div class="dataTables_filter">
-              <label>
-                Search
-                <input type="search" class="form-control" placeholder="Search by" v-model="Search_fund" />
-              </label>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-3 mt-5">
-            <div class="text-end dataTables_length d-flex gap-2">
-              <label class="mt-2">Show</label>
-              <select v-model.number="itemsPerPage" class="form-select">
-                <option :value="10">10</option>
-                <option :value="25">25</option>
-                <option :value="50">50</option>
-                <option :value="100">100</option>
-              </select>
-              <label class="mt-2">entries</label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Table -->
-        <div class="card-datatable text-nowrap">
-          <table class="table">
-            <thead>
+        <div class="table-scroll">
+          <table class="table table-hover align-middle mb-0 subcat-table">
+            <thead class="table-head">
               <tr>
-                <th>Sl</th>
-                <th>Phase</th>
-                <th class="text-end">Action</th>
+                <th style="width:70px">Sl</th>
+                <th class="sortable">Fund <i class="fa fa-sort ms-1"></i></th>
+                <th class="text-end" style="width:160px">Action</th>
               </tr>
             </thead>
+
             <tbody>
-              <tr v-for="(fund, index) in visibleFunds" :key="fund.id">
+              <!-- Loading -->
+              <tr v-if="loader">
+                <td colspan="3" class="text-center py-4">
+                  <i class="fa fa-spinner fa-spin me-2"></i> Loading...
+                </td>
+              </tr>
+
+              <!-- Rows -->
+              <tr v-for="(fund, index) in visibleFunds" :key="fund.id" v-else>
                 <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
-                <td>{{ fund.fund }}</td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="fw-medium">{{ fund.fund }}</span>
+                  </div>
+                </td>
                 <td class="text-end">
-                  <button @click="openEdit(fund)" class="btn btn-warning me-2">
+                  <button @click="openEdit(fund)" class="btn btn-warning btn-sm me-2">
                     <i class="fas fa-edit"></i>
                   </button>
-                  <button @click="openDelete(fund)" class="btn btn-danger btn-danger-glow">
+                  <button @click="openDelete(fund)" class="btn btn-danger btn-sm btn-danger-glow">
                     <i class="fas fa-trash"></i>
                   </button>
                 </td>
               </tr>
 
+              <!-- Empty states -->
               <tr v-if="!loader && funds.length > 0 && filteredFund.length === 0">
-                <td colspan="3" class="text-center text-muted">No departments match your search.</td>
+                <td colspan="3" class="text-center text-muted py-4">No funds match your search.</td>
               </tr>
-
               <tr v-if="funds.length === 0 && !loader">
-                <td colspan="3" class="text-center text-muted">No data. Please add a fund.</td>
-              </tr>
-
-              <tr v-if="loader">
-                <td colspan="3" class="text-center">
-                  <div class="spinner-border spinner-border-sm" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                  </div>
-                  Loading...
-                </td>
+                <td colspan="3" class="text-center text-muted py-4">No data. Please add a fund.</td>
               </tr>
             </tbody>
+
+            <!-- (optional) aggregate footer -->
+            <!--
+            <tfoot v-if="filteredFund.length">
+              <tr class="table-light">
+                <th colspan="3" class="text-end">Total: {{ filteredFund.length }}</th>
+              </tr>
+            </tfoot>
+            -->
           </table>
-
-          <!-- Pagination -->
-          <div class="row mt-3" v-if="!loader && filteredFund.length > 0">
-            <div class="col-sm-6">
-              <div class="dataTables_info p-3">
-                Showing {{ showingInfo.start }} to {{ showingInfo.end }} of {{ showingInfo.total }} entries
-                <span v-if="Search_fund.trim() && filteredFund.length !== funds.length">
-                  (filtered from {{ funds.length }} total)
-                </span>
-              </div>
-            </div>
-            <div class="col-sm-6" v-if="totalPages > 1">
-              <div class="dataTables_paginate paging_simple_numbers float-end">
-                <ul class="pagination">
-                  <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                    <button class="page-link" @click="previousPage" :disabled="currentPage === 1">Previous</button>
-                  </li>
-
-                  <li v-if="visiblePages[0] > 1" class="page-item">
-                    <button class="page-link" @click="goToPage(1)">1</button>
-                  </li>
-                  <li v-if="visiblePages[0] > 2" class="page-item disabled">
-                    <span class="page-link">...</span>
-                  </li>
-
-                  <li
-                    v-for="page in visiblePages"
-                    :key="page"
-                    class="page-item"
-                    :class="{ active: page === currentPage }"
-                  >
-                    <button class="page-link" @click="goToPage(page)">{{ page }}</button>
-                  </li>
-
-                  <li v-if="visiblePages[visiblePages.length - 1] < totalPages - 1" class="page-item disabled">
-                    <span class="page-link">...</span>
-                  </li>
-                  <li v-if="visiblePages[visiblePages.length - 1] < totalPages" class="page-item">
-                    <button class="page-link" @click="goToPage(totalPages)">{{ totalPages }}</button>
-                  </li>
-
-                  <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                    <button class="page-link" @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div> <!-- /pagination -->
         </div>
       </div>
+
+      <!-- Pagination (new styled footer like Stock Summary) -->
+      <div class="card-footer d-flex align-items-center justify-content-between" v-if="!loader && filteredFund.length">
+        <div class="text-muted small">
+          Showing {{ showingInfo.start }}–{{ showingInfo.end }} of {{ showingInfo.total }} items
+          <span v-if="Search_fund.trim() && filteredFund.length !== funds.length">
+            (filtered from {{ funds.length }} total)
+          </span>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <select v-model.number="itemsPerPage" class="form-select form-select-sm w-auto">
+            <option :value="10">10 / page</option>
+            <option :value="25">25 / page</option>
+            <option :value="50">50 / page</option>
+            <option :value="100">100 / page</option>
+          </select>
+
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary" :disabled="currentPage === 1" @click="previousPage">
+              <i class="fa fa-chevron-left"></i>
+            </button>
+
+            <!-- compact numbered pages -->
+            <button
+              v-if="visiblePages[0] > 1"
+              class="btn btn-outline-secondary"
+              @click="goToPage(1)"
+            >1</button>
+            <button v-if="visiblePages[0] > 2" class="btn btn-outline-secondary" disabled>…</button>
+
+            <button
+              v-for="p in visiblePages"
+              :key="p"
+              class="btn"
+              :class="p === currentPage ? 'btn-primary' : 'btn-outline-secondary'"
+              @click="goToPage(p)"
+            >{{ p }}</button>
+
+            <button
+              v-if="visiblePages[visiblePages.length - 1] < totalPages - 1"
+              class="btn btn-outline-secondary"
+              disabled
+            >…</button>
+            <button
+              v-if="visiblePages[visiblePages.length - 1] < totalPages"
+              class="btn btn-outline-secondary"
+              @click="goToPage(totalPages)"
+            >{{ totalPages }}</button>
+
+            <button class="btn btn-outline-secondary" :disabled="currentPage === totalPages" @click="nextPage">
+              <i class="fa fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- /Pagination -->
     </div>
 
     <!-- ===== Create Modal ===== -->
-    <div v-if="createModal" class="modal-backdrop" @click.self="cancelCreate" role="dialog" aria-modal="true" aria-labelledby="createTitle">
+    <div v-if="createModal" class="modal-backdrop" @click.self="cancelCreate">
       <div class="modal-card animate-pop">
         <div class="modal-header">
-          <h5 id="createTitle" class="m-0">Create Fund</h5>
-          <button class="btn-close" @click="cancelCreate" aria-label="Close"></button>
+          <h5 class="m-0">Create Fund</h5>
+          <button class="btn-close" @click="cancelCreate"></button>
         </div>
         <div class="modal-body">
           <label class="form-label">Fund Name</label>
@@ -161,11 +194,11 @@
     </div>
 
     <!-- ===== Edit Modal ===== -->
-    <div v-if="editModal" class="modal-backdrop" @click.self="cancelEdit" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <div v-if="editModal" class="modal-backdrop" @click.self="cancelEdit">
       <div class="modal-card animate-pop">
         <div class="modal-header">
-          <h5 id="editTitle" class="m-0">Edit Fund</h5>
-          <button class="btn-close" @click="cancelEdit" aria-label="Close" :disabled="updating"></button>
+          <h5 class="m-0">Edit Fund</h5>
+          <button class="btn-close" @click="cancelEdit" :disabled="updating"></button>
         </div>
         <div class="modal-body">
           <label class="form-label">Fund Name</label>
@@ -187,26 +220,20 @@
       </div>
     </div>
 
-
-    <!-- ===== Delete Modal (SAME DESIGN) ===== -->
-    <div v-if="deleteModal" class="modal-backdrop" @click.self="cancelDelete" role="dialog" aria-modal="true" aria-labelledby="deleteTitle">
+    <!-- ===== Delete Modal ===== -->
+    <div v-if="deleteModal" class="modal-backdrop" @click.self="cancelDelete">
       <div class="modal-card animate-pop">
-        <!-- শুধু হেডারে danger ক্লাস, বাকি সব Create/Edit–এর মতোই -->
         <div class="modal-header danger">
-          <h5 id="deleteTitle" class="m-0">Confirm Deletion</h5>
-          <button class="btn-close btn-close-white" @click="cancelDelete" aria-label="Close" :disabled="deleting"></button>
+          <h5 class="m-0">Confirm Deletion</h5>
+          <button class="btn-close btn-close-white" @click="cancelDelete" :disabled="deleting"></button>
         </div>
-
         <div class="modal-body">
-          <p class="mb-1">
-            Are you sure you want to delete <strong>#{{ deleteItem?.id }}</strong>?
-          </p>
-          <p class="mb-0"><strong>Name:</strong> {{ deleteItem?.fund }}</p>
+          <p>Are you sure you want to delete <strong>#{{ deleteItem?.id }}</strong>?</p>
+          <p><strong>Name:</strong> {{ deleteItem?.fund }}</p>
         </div>
-
         <div class="modal-footer">
           <button class="btn btn-light" @click="cancelDelete" :disabled="deleting">Cancel</button>
-          <button class="btn btn-danger btn-danger-glow" @click="confirmDelete" :disabled="deleting">
+          <button class="btn btn-danger" @click="confirmDelete" :disabled="deleting">
             <span v-if="deleting"><i class="fas fa-spinner fa-spin me-2"></i>Deleting...</span>
             <span v-else>Delete</span>
           </button>
@@ -226,8 +253,8 @@ const { appContext } = getCurrentInstance();
 const http = appContext.config.globalProperties.$http;
 
 // Loaders
-const isLoading = ref(false); // full page
-const loader = ref(false);    // table area
+const isLoading = ref(false);
+const loader = ref(false);
 const creating = ref(false);
 const updating = ref(false);
 const deleting = ref(false);
@@ -242,10 +269,8 @@ const currentPage = ref(1);
 const createModal = ref(false);
 const editModal = ref(false);
 const deleteModal = ref(false);
-
 const editId = ref(null);
 const deleteItem = ref(null);
-
 const formData = ref({ fund: "" });
 
 // ==== API ====
@@ -253,8 +278,7 @@ async function getFunds() {
   isLoading.value = true;
   loader.value = true;
   try {
-    // backend should return: { funds: [...] }
-    const res = await http.get("/fund/create");
+    const res = await http.get("/fund/create"); // expects { funds: [...] }
     funds.value = Array.isArray(res.data?.funds) ? res.data.funds : [];
   } catch (e) {
     console.error("load funds:", e);
@@ -266,13 +290,8 @@ async function getFunds() {
 }
 
 // ==== Create ====
-function openCreate() {
-  formData.value = { fund: "" };
-  createModal.value = true;
-}
-function cancelCreate() {
-  if (!creating.value) createModal.value = false;
-}
+function openCreate() { formData.value = { fund: "" }; createModal.value = true; }
+function cancelCreate() { if (!creating.value) createModal.value = false; }
 async function confirmCreate() {
   creating.value = true;
   try {
@@ -283,9 +302,7 @@ async function confirmCreate() {
   } catch (e) {
     console.error("create:", e);
     toast.error(e?.response?.data?.message || "Failed to create fund");
-  } finally {
-    creating.value = false;
-  }
+  } finally { creating.value = false; }
 }
 
 // ==== Edit ====
@@ -294,9 +311,7 @@ function openEdit(fund) {
   formData.value = { fund: fund.fund ?? "" };
   editModal.value = true;
 }
-function cancelEdit() {
-  if (!updating.value) editModal.value = false;
-}
+function cancelEdit() { if (!updating.value) editModal.value = false; }
 async function confirmEdit() {
   if (!editId.value) return;
   updating.value = true;
@@ -309,19 +324,12 @@ async function confirmEdit() {
   } catch (e) {
     console.error("update:", e);
     toast.error(e?.response?.data?.message || "Failed to update fund");
-  } finally {
-    updating.value = false;
-  }
+  } finally { updating.value = false; }
 }
 
 // ==== Delete ====
-function openDelete(fund) {
-  deleteItem.value = fund;
-  deleteModal.value = true;
-}
-function cancelDelete() {
-  if (!deleting.value) deleteModal.value = false;
-}
+function openDelete(fund) { deleteItem.value = fund; deleteModal.value = true; }
+function cancelDelete() { if (!deleting.value) deleteModal.value = false; }
 async function confirmDelete() {
   if (!deleteItem.value?.id) return;
   deleting.value = true;
@@ -339,9 +347,6 @@ async function confirmDelete() {
   }
 }
 
-// Mount
-onMounted(() => getFunds());
-
 // ===== Filtering & Pagination =====
 const filteredFund = computed(() => {
   if (!funds.value?.length) return [];
@@ -355,7 +360,7 @@ const visibleFunds = computed(() => {
   return filteredFund.value.slice(start, start + itemsPerPage.value);
 });
 
-const totalPages = computed(() => Math.ceil(filteredFund.value.length / itemsPerPage.value));
+const totalPages = computed(() => Math.max(1, Math.ceil(filteredFund.value.length / itemsPerPage.value)));
 
 const visiblePages = computed(() => {
   const pages = [];
@@ -381,64 +386,40 @@ const showingInfo = computed(() => {
   return { start, end, total: filteredFund.value.length };
 });
 
-watch(Search_fund, () => (currentPage.value = 1));
-watch(itemsPerPage, () => (currentPage.value = 1));
-
 const goToPage = (p) => { if (p >= 1 && p <= totalPages.value) currentPage.value = p; };
 const previousPage = () => { if (currentPage.value > 1) currentPage.value--; };
 const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value++; };
+
+watch(Search_fund, () => (currentPage.value = 1));
+watch(itemsPerPage, () => (currentPage.value = 1));
+onMounted(() => getFunds());
 </script>
 
 <style scoped>
-/* ========== Reusable modal design like your Confirm Modal ========== */
-.modal-backdrop{
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.5);
-  display: grid; place-items: center;
-  padding: 16px;
-  z-index: 9999;
-}
+/* Table polish (same as “Stock Summary” style) */
+.table-scroll { overflow-x: auto; max-width: 100%; }
+.table thead th { color: #fff; position: sticky; top: 0; z-index: 1; }
+.table-head { background: #7367f0; color: #fff; }
+.sortable { cursor: pointer; user-select: none; }
+.input-group .form-control { min-width: 260px; }
+.badge { font-weight: 600; }
+.subcat-table tfoot th { background: #f5f6f8; }
 
-.modal-card{
-  overflow: hidden;
-  box-shadow: 0 15px 40px rgba(0,0,0,.25);
-}
+/* Modal system */
+.modal-backdrop{ position:fixed; inset:0; display:grid; place-items:center; background:rgba(15,18,30,.55); z-index:99999; padding:12px; }
+.modal-card{ width:min(640px,96vw); background:#fff; border-radius:14px; box-shadow:0 10px 30px rgba(0,0,0,.25); overflow:hidden; max-height:92vh; display:flex; flex-direction:column; position:relative; }
+.modal-header{ position:sticky; top:0; z-index:10; background:#fff; flex:0 0 auto; padding:12px 16px; display:flex; align-items:center; gap:12px; justify-content:space-between; border-bottom:1px solid #f0f0f0; }
+.modal-header.danger{ background:#fff5f5; border-bottom-color:#fecaca; }
+.modal-body{ flex:1 1 auto; min-height:0; overflow:auto; padding:16px; background:#fff; }
+.modal-footer{ flex:0 0 auto; padding:12px 16px; display:flex; align-items:center; gap:12px; border-top:1px solid #f0f0f0; background:#fff; }
 
-.modal-header{
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px;
-  border-bottom: 1px solid #eef0f3;
-  background: linear-gradient(135deg, #f8f9ff, #eef2ff);
-}
-.modal-header.danger{
-  color:#fff;
-  background: linear-gradient(135deg, #ef4444, #b91c1c);
-  border-bottom-color: transparent;
-}
-
-.modal-body{ padding: 16px; }
-.modal-footer{
-  display: flex; gap: 10px; justify-content: flex-end;
-  padding: 12px 16px; border-top: 1px solid #eef0f3;
-}
-
-/* Subtle pop-in animation */
-@keyframes pop {
-  0% { transform: scale(.96); opacity: 0; }
-  100%{ transform: scale(1); opacity: 1; }
-}
-.animate-pop{ animation: pop .15s ease-out; }
-
-/* Buttons polish */
-.btn-danger-glow {
-  box-shadow: 0 8px 20px rgba(239, 68, 68, .35);
-  transition: transform .08s ease, box-shadow .2s ease;
-}
-.btn-danger-glow:active {
-  transform: translateY(1px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, .25);
-}
-
-/* Ensure tables look tidy */
-.table th, .table td { vertical-align: middle; }
+/* Buttons */
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; height:34px; padding:0 12px; border-radius:8px; border:1px solid transparent; font-weight:600; cursor:pointer; background:#f3f4f6; color:#111827; transition:transform .12s ease, filter .12s ease, background .12s ease; }
+.btn:hover{ background:#e5e7eb; }
+.btn:disabled{ opacity:.6; cursor:not-allowed; }
+.btn-primary{ background:#7367f0; color:#fff; box-shadow:0 6px 14px rgba(115,103,240,.25); }
+.btn-primary:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+.btn-danger{ background:#ef4444; color:#fff; }
+.btn-danger:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+.btn-warning{ background:#facc15; color:#000; }
 </style>

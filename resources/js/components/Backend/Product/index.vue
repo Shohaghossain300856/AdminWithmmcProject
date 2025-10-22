@@ -1,11 +1,38 @@
 <template>
   <div id="items-page" class="container-xxl flex-grow-1 container-p-y">
-    <!-- Header -->
-    <div class="d-flex align-items-center m-3 mb-3">
-      <h5 class="card-header ms-0 mb-0 p-0">Item Page</h5>
-      <button class="btn p_create-btn ms-auto" @click="openCreate">
-        <i class="fa fa-plus me-2"></i> Add Item
-      </button>
+    <!-- Header (Stock Summary style) -->
+    <div class="card mb-3">
+      <div class="card-body d-flex align-items-center gap-2 flex-wrap">
+        <h5 class="mb-0 d-flex align-items-center gap-2">
+          <i class="fa fa-boxes-stacked me-2"></i> Item Page
+        </h5>
+
+        <!-- Count -->
+        <span class="badge bg-primary ms-2">{{ products.length }} Items</span>
+
+        <!-- Right controls (visual only: search/per-page) -->
+        <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+          <div class="input-group input-group-sm w-auto">
+            <span class="input-group-text"><i class="fa fa-search"></i></span>
+            <input class="form-control" placeholder="Search category / subcategory / product…" />
+          </div>
+
+          <select class="form-select form-select-sm w-auto">
+            <option selected>25 / page</option>
+            <option>50 / page</option>
+            <option>100 / page</option>
+          </select>
+
+          <button class="btn btn-sm btn-outline-primary" @click="productData" :disabled="submitting">
+            <i :class="['fa', submitting ? 'fa-spinner fa-spin' : 'fa-rotate']"></i>
+            <span class="ms-1">{{ submitting ? 'Loading…' : 'Refresh' }}</span>
+          </button>
+
+          <button class="btn btn-primary btn-sm" @click="openCreate">
+            <i class="fa fa-plus me-2"></i> Add Item
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Table -->
@@ -13,8 +40,8 @@
       <div class="card-datatable text-nowrap">
         <div class="table-scroll">
           <table class="table table-hover align-middle mb-0 subcat-table">
-            <thead>
-              <tr style="background:#7367f0;">
+            <thead class="table-head">
+              <tr>
                 <th style="width:70px">Sl</th>
                 <th>Category</th>
                 <th>Subcategory</th>
@@ -30,10 +57,7 @@
                 <td>{{ row?.category?.name || row?.category_name || findCatName(row?.category_id) || '—' }}</td>
                 <td>{{ row?.subcategory?.sub_category || row?.subcategory_name || findSubcatName(row?.subCatagorie_id) || '—' }}</td>
                 <td>{{ row?.Product || row?.product || '—' }}</td>
-
-                <!-- ✅ show country label robustly -->
                 <td>{{ row?.country?.name || findCountryName(row?.country_id) || '—' }}</td>
-
                 <td>{{ row?.unit || '—' }}</td>
                 <td class="text-end">
                   <button class="btn btn-sm btn-primary me-2" title="Edit" @click="openEdit(row)">
@@ -45,11 +69,37 @@
                 </td>
               </tr>
               <tr v-if="!products.length">
-                <td colspan="7" class="text-center py-4">No data</td>
+                <td colspan="7" class="text-center py-4 text-muted">
+                  <i class="fa fa-inbox me-2"></i>No data
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
+
+        <!-- Pagination footer (visual match; logic untouched) -->
+        <div class="card-footer d-flex align-items-center justify-content-between" v-if="products.length">
+          <div class="text-muted small">
+            Showing 1–{{ products.length }} of {{ products.length }} items
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <select class="form-select form-select-sm w-auto">
+              <option selected>25 / page</option>
+              <option>50 / page</option>
+              <option>100 / page</option>
+            </select>
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-secondary" disabled>
+                <i class="fa fa-chevron-left"></i>
+              </button>
+              <button class="btn btn-primary">1</button>
+              <button class="btn btn-outline-secondary" disabled>
+                <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- /Pagination footer -->
       </div>
     </div>
 
@@ -220,6 +270,7 @@
     <!-- DELETE MODAL -->
     <div v-if="deleteOpen" class="modal-backdrop" @click.self="closeDelete">
       <div class="modal-card" role="dialog" aria-modal="true">
+        <!-- ⚠️ Delete header stays as your original light red style -->
         <div class="modal-header danger">
           <h5 class="m-0"><i class="fa fa-exclamation-triangle me-2"></i> Confirm Delete</h5>
           <button type="button" class="btn-close" @click="closeDelete"></button>
@@ -240,6 +291,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -294,7 +346,7 @@ const unitOptions = [
   { value: 'Ml', label: 'Ml' },
 ]
 
-/* helpers to show labels if backend returns only ids */
+/* helpers */
 function findCatName (id) {
   if (!id) return ''
   const hit = categories.value.find(c => Number(c.id) === Number(id))
@@ -344,7 +396,6 @@ async function createItem () {
     const res = await http.post('/product', payload)
     const created = res?.data?.data ?? res?.data
     if (created && created.id) {
-      // ensure local shape
       const normalized = {
         ...created,
         category_id: created.category_id ?? payload.category_id,
@@ -390,7 +441,6 @@ function openEdit (row) {
     type: String(row?.type ?? '1'),
     category_id: Number(row?.category_id ?? row?.category?.id ?? null),
     subCatagorie_id: Number(row?.subCatagorie_id ?? row?.subcategory?.id ?? null),
-    // ✅ get ID, not name
     country_id: row?.country_id != null
       ? Number(row.country_id)
       : (row?.country?.id != null ? Number(row.country.id) : null),
@@ -529,9 +579,7 @@ async function productData () {
         ...r,
         category_id: Number(r.category_id ?? r?.category?.id ?? null),
         subCatagorie_id: Number(r.subCatagorie_id ?? r?.subcategory?.id ?? null),
-        // ✅ keep as numeric ID; not name
         country_id: cid,
-        // keep related object if available
         country: r.country ?? (cid ? { id: cid, name: findCountryName(cid) } : null),
         unit: r.unit ?? ''
       }
@@ -547,20 +595,32 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* Header button */
 .p_create-btn{background:#7367f0;border:none;box-shadow:0 6px 14px rgba(115,103,240,.3);color:#fff}
 .p_create-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
+
+/* Table (Stock Summary style) */
 .table-scroll{max-height:65vh;overflow-y:auto;border-radius:.5rem;border:1px solid rgba(0,0,0,.08)}
-.table th{text-transform:uppercase;font-size:.8125rem;letter-spacing:.2px;color:#fff}
+.table thead th{color:#fff;position:sticky;top:0;z-index:1}
+.table-head{background:#7367f0;color:#fff}
+.table th{text-transform:uppercase;font-size:.8125rem;letter-spacing:.2px}
+
+/* Modal system */
 .modal-backdrop{position:fixed;inset:0;display:grid;place-items:center;background:rgba(15,18,30,.55);z-index:99999;padding:12px}
 .modal-card{width:min(640px,96vw);background:#fff;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;position:relative}
 .modal-header{position:sticky;top:0;z-index:10;background:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f0f0}
+/* ✅ Delete modal header stays light-red like your original */
 .modal-header.danger{background:#fff5f5;border-bottom-color:#fecaca}
 .modal-body{flex:1 1 auto;min-height:0;overflow:auto;padding:16px;background:#fff}
 .modal-footer{flex:0 0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px;border-top:1px solid #f0f0f0;background:#fff}
+
+/* Form */
 .form-row{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
 .form-label{font-weight:700;color:#334155;margin-bottom:4px;font-size:14px}
 .form-input,.p_input{height:44px;border:1px solid #e5e7eb;border-radius:12px;padding:0 12px;outline:none;background:#fff;width:100%}
 .form-input:focus,.p_input:focus{border-color:#7367f0;box-shadow:0 0 0 4px rgba(115,103,240,.15)}
+
+/* Buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:40px;padding:0 12px;border-radius:10px;border:1px solid transparent;font-weight:600;cursor:pointer;background:#f3f4f6;color:#111827;transition:transform .12s ease,filter .12s ease,background .12s ease}
 .btn:hover{background:#e5e7eb}
 .btn:disabled{opacity:.6;cursor:not-allowed}

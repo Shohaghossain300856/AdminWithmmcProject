@@ -88,11 +88,13 @@
 
   @canany(['stock management'])
   <li class="menu-item 
-  {{ Route::currentRouteNamed('fund.index') ? 'active open' : '' }}">
+  {{
+   Route::currentRouteNamed('stock-create.index')
+   || Route::currentRouteNamed('stock-reports.index') ? 'active open' : '' }}">
   
   <a href="javascript:void(0);" class="menu-link menu-toggle">
     <i class="menu-icon tf-icons ti ti-users"></i>
-    <div data-i18n="Fund Management">Stock In</div>
+    <div data-i18n="Stock In">Stock In</div>
   </a>
 
   <ul class="menu-sub">
@@ -116,6 +118,33 @@
   </ul>
 </li>
 @endcanany
+
+
+@canany(['report management'])
+  <li class="menu-item 
+  {{ Route::currentRouteNamed('stock-reports.index') ? 'active open' : '' }}">
+  
+  <a href="javascript:void(0);" class="menu-link menu-toggle">
+    <i class="menu-icon tf-icons ti ti-users"></i>
+    <div data-i18n="Fund Management">Reports</div>
+  </a>
+
+  <ul class="menu-sub">
+
+    @can('stock reports')
+    <li class="menu-item {{ Route::currentRouteNamed('stock-reports.index') ? 'active' : '' }}">
+      <a href="{{ route('stock-reports.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-smart-home"></i>
+        <div data-i18n="Stock-Report">Stock-Report</div>
+      </a>
+    </li>
+    @endcan  
+
+  </ul>
+</li>
+@endcanany
+
+
 
 {{-- User Management --}}
 @canany(['user-index','user-create','user-edit','user-delete'])

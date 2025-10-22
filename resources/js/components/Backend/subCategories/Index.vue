@@ -1,11 +1,44 @@
 <template>
   <div class="container-xxl flex-grow-1 container-p-y">
-    <!-- Header -->
-    <div class="d-flex align-items-center m-3 mb-3">
-      <h5 class="card-header ms-0 mb-0 p-0">Sub Categories</h5>
-      <button class="btn p_create-btn ms-auto" @click="openCreate">
-        <i class="fa fa-plus me-2"></i> New
-      </button>
+    <!-- Header (Stock Summary style) -->
+    <div class="card mb-3">
+      <div class="card-body d-flex align-items-center gap-2 flex-wrap">
+        <h5 class="mb-0 d-flex align-items-center gap-2">
+          <i class="fa fa-layer-group me-2"></i> Sub Categories
+        </h5>
+
+        <!-- Count -->
+        <span class="badge bg-primary ms-2">
+          {{ items.length }} Items
+        </span>
+
+        <!-- Right controls -->
+        <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+          <!-- Search (visual only to match style) -->
+          <div class="input-group input-group-sm w-auto">
+            <span class="input-group-text"><i class="fa fa-search"></i></span>
+            <input class="form-control" placeholder="Search subcategory / code" />
+          </div>
+
+          <!-- Per page (visual only) -->
+          <select class="form-select form-select-sm w-auto">
+            <option selected>25 / page</option>
+            <option>50 / page</option>
+            <option>100 / page</option>
+          </select>
+
+          <!-- Refresh -->
+          <button class="btn btn-sm btn-outline-primary" @click="fetchItems" :disabled="isLoading">
+            <i :class="['fa', isLoading ? 'fa-spinner fa-spin' : 'fa-rotate']"></i>
+            <span class="ms-1">{{ isLoading ? 'Loading…' : 'Refresh' }}</span>
+          </button>
+
+          <!-- Add New -->
+          <button class="btn btn-primary btn-sm" @click="openCreate">
+            <i class="fa fa-plus me-2"></i> New
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Table -->
@@ -13,8 +46,8 @@
       <div class="card-datatable text-nowrap">
         <div class="table-scroll">
           <table class="table table-hover align-middle mb-0 subcat-table">
-            <thead>
-              <tr style="background:#7367f0;">
+            <thead class="table-head">
+              <tr>
                 <th style="width:80px">Sl</th>
                 <th>Subcategory</th>
                 <th style="width:220px">Code</th>
@@ -36,17 +69,43 @@
                 </td>
               </tr>
               <tr v-if="!items.length">
-                <td colspan="4" class="text-center py-4">No data</td>
+                <td colspan="4" class="text-center py-4 text-muted">
+                  <i class="fa fa-inbox me-2"></i>No data
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
+
+        <!-- Pagination footer (visual match; logic untouched) -->
+        <div class="card-footer d-flex align-items-center justify-content-between" v-if="items.length">
+          <div class="text-muted small">
+            Showing 1–{{ items.length }} of {{ items.length }} items
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <select class="form-select form-select-sm w-auto">
+              <option selected>25 / page</option>
+              <option>50 / page</option>
+              <option>100 / page</option>
+            </select>
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-outline-secondary" disabled>
+                <i class="fa fa-chevron-left"></i>
+              </button>
+              <button class="btn btn-primary">1</button>
+              <button class="btn btn-outline-secondary" disabled>
+                <i class="fa fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- /Pagination footer -->
       </div>
     </div>
 
     <!-- CREATE MODAL -->
     <div v-if="createOpen" class="modal-backdrop" @click.self="closeCreate">
-      <div class="modal-card" role="dialog" aria-modal="true">
+      <div class="modal-card animate-pop" role="dialog" aria-modal="true">
         <div class="modal-header">
           <h5 class="m-0"><i class="fa fa-plus me-2"></i> New Subcategory</h5>
           <button type="button" class="btn-close" @click="closeCreate"></button>
@@ -73,7 +132,7 @@
 
     <!-- EDIT MODAL -->
     <div v-if="editOpen" class="modal-backdrop" @click.self="closeEdit">
-      <div class="modal-card" role="dialog" aria-modal="true">
+      <div class="modal-card animate-pop" role="dialog" aria-modal="true">
         <div class="modal-header">
           <h5 class="m-0"><i class="fa fa-edit me-2"></i> Edit Subcategory</h5>
           <button type="button" class="btn-close" @click="closeEdit"></button>
@@ -100,10 +159,10 @@
 
     <!-- DELETE MODAL -->
     <div v-if="deleteOpen" class="modal-backdrop" @click.self="closeDelete">
-      <div class="modal-card" role="dialog" aria-modal="true">
+      <div class="modal-card animate-pop" role="dialog" aria-modal="true">
         <div class="modal-header danger">
           <h5 class="m-0"><i class="fa fa-exclamation-triangle me-2"></i> Confirm Delete</h5>
-          <button type="button" class="btn-close" @click="closeDelete"></button>
+          <button type="button" class="btn-close btn-close-white" @click="closeDelete"></button>
         </div>
         <div class="modal-body">
           <p class="mb-2">
@@ -238,43 +297,96 @@ onMounted(fetchItems)
 </script>
 
 <style scoped>
-/* Top CTA */
-.p_create-btn{ background:#7367f0; border:none; box-shadow:0 6px 14px rgba(115,103,240,.3); }
+/* ========== Header / Quick Actions ========== */
+.p_create-btn{ background:#7367f0; color:#fff; border:none; box-shadow:0 6px 14px rgba(115,103,240,.3); }
 .p_create-btn:hover{ filter:brightness(1.05); transform:translateY(-1px); }
 
-/* Loading lock */
+/* ========== Table (Stock Summary Style) ========== */
+.table-scroll { overflow-x: auto; max-width: 100%; }
+.table thead th { color: #fff; position: sticky; top: 0; z-index: 1; }
+.table-head { background: #7367f0; color: #fff; }
+.input-group .form-control { min-width: 260px; }
+.badge { font-weight: 600; }
+.subcat-table tfoot th { background: #f5f6f8; }
+
+/* Loading lock on card */
 .p_loading{ opacity:.6; pointer-events:none; }
 
-/* Table */
-.table-scroll{ max-height:65vh; overflow-y:auto; border-radius:.5rem; border:1px solid rgba(0,0,0,.08); }
-.table th{ text-transform:uppercase; font-size:.8125rem; letter-spacing:.2px; color:#fff; }
+/* ========== Modal System (FULL CSS) ========== */
+.modal-backdrop{
+  position:fixed; inset:0;
+  display:grid; place-items:center;
+  background:rgba(15,18,30,.55);
+  z-index:99999; padding:12px;
+  overflow:auto;
+}
+.modal-card{
+  width:min(640px,96vw);
+  background:#fff; border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+  overflow:hidden; max-height:92vh;
+  display:flex; flex-direction:column;
+  animation:pop .14s ease-out;
+}
+@keyframes pop{
+  from{ transform:scale(.98); opacity:.6 }
+  to{ transform:scale(1); opacity:1 }
+}
+.modal-card.animate-pop{ animation:pop .14s ease-out }
 
-/* ===== Modal System (fixed header/label overlap) ===== */
-.modal-backdrop{ position:fixed; inset:0; display:grid; place-items:center; background:rgba(15,18,30,.55); z-index:99999; padding:12px; }
-.modal-card{ width:min(640px,96vw); background:#fff; border-radius:14px; box-shadow:0 10px 30px rgba(0,0,0,.25); overflow:hidden; max-height:92vh; display:flex; flex-direction:column; position:relative; }
-.modal-card.modal-wide{ width:min(880px,96vw); }
+.modal-header{
+  position:sticky; top:0; z-index:10;
+  background:#fff; padding:12px 16px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid #f0f0f0;
+}
+.modal-header.danger {
+  background: #fff;            /* white background */
+  color: #111827;              /* dark text */
+  border-bottom-color: #f0f0f0;
+}
+.modal-body{
+  flex:1 1 auto; min-height:0;
+  overflow:auto; padding:16px; background:#fff;
+}
+.modal-footer{
+  flex:0 0 auto; padding:12px 16px;
+  display:flex; align-items:center; gap:12px;
+  border-top:1px solid #f0f0f0; background:#fff;
+}
 
-.modal-header{ position:sticky; top:0; z-index:10; background:#fff; flex:0 0 auto; padding:12px 16px; display:flex; align-items:center; gap:12px; justify-content:space-between; border-bottom:1px solid #f0f0f0; }
-.modal-header.danger{ background:#fff5f5; border-bottom-color:#fecaca; }
-
-.modal-body{ flex:1 1 auto; min-height:0; overflow:auto; padding:16px; background:#fff; }
-.modal-footer{ flex:0 0 auto; padding:12px 16px; display:flex; align-items:center; gap:12px; border-top:1px solid #f0f0f0; background:#fff; }
-
-/* Form rows inside modal */
+/* Danger header close button look */
+.btn-close.btn-close-white {
+  filter: none;                /* normal close button */
+}
+/* Form elements inside modal */
 .form-row{ display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
 .form-label{ font-weight:700; color:#334155; margin-bottom:4px; font-size:14px; }
-.form-input{ height:44px; border:1px solid #e5e7eb; border-radius:12px; padding:0 12px; outline:none; background:#fff; }
+.form-input{
+  height:44px; border:1px solid #e5e7eb;
+  border-radius:12px; padding:0 12px; outline:none; background:#fff;
+}
 .form-input:focus{ border-color:#7367f0; box-shadow:0 0 0 4px rgba(115,103,240,.15); }
 
-/* Buttons */
-.btn{ display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:0 12px; border-radius:10px; border:1px solid transparent; font-weight:600; cursor:pointer; background:#f3f4f6; color:#111827; transition:transform .12s ease, filter .12s ease, background .12s ease; }
+/* ========== Buttons ========== */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:6px; height:34px; padding:0 12px;
+  border-radius:8px; border:1px solid transparent;
+  font-weight:600; cursor:pointer;
+  background:#f3f4f6; color:#111827;
+  transition:transform .12s ease, filter .12s ease, background .12s ease;
+}
 .btn:hover{ background:#e5e7eb; }
 .btn:disabled{ opacity:.6; cursor:not-allowed; }
-.btn-sm{ height:34px; padding:0 10px; font-size:.875rem; border-radius:8px; }
 .btn-primary{ background:#7367f0; color:#fff; box-shadow:0 6px 14px rgba(115,103,240,.25); }
 .btn-primary:hover{ filter:brightness(1.05); transform:translateY(-1px); }
 .btn-danger{ background:#ef4444; color:#fff; }
 .btn-danger:hover{ filter:brightness(1.05); transform:translateY(-1px); }
-.btn-close{ border:none; background:transparent; font-size:1.25rem; line-height:1; color:#64748b; border-radius:10px; padding:6px; }
-.btn-close:hover{ background:#eef2ff; color:#3730a3; }
+.btn-ghost{ background:#f8fafc; color:#111827; border:1px solid #e5e7eb; }
+.btn-ghost:hover{ background:#eef2ff; }
+
+/* Icon spacing helper (if needed) */
+.ms-2{ margin-left:.5rem; }
+.me-2{ margin-right:.5rem; }
 </style>
