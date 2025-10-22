@@ -2,33 +2,93 @@
 <template>
   <div class="container-xxl flex-grow-1 container-p-y">
     <!-- Header -->
-    <div class="d-flex align-items-center m-3 mb-3">
-      <h5 class="card-header ms-0 mb-0 p-0">Suppliers</h5>
-      <button class="btn p_create-btn ms-auto" @click="openCreate">
-        <i class="fa fa-plus me-2"></i> New
-      </button>
+    <div class="card mb-3">
+      <div class="card-body d-flex align-items-center gap-2 flex-wrap">
+        <h5 class="mb-0 d-flex align-items-center gap-2">
+          <i class="fa fa-coins me-2"></i> Suppliers
+        </h5>
+
+        <!-- Counts -->
+        <span class="badge bg-primary ms-2">
+          {{ filteredRows.length }} Items
+        </span>
+
+        <!-- Search / Controls -->
+        <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+          <div class="input-group input-group-sm w-auto">
+            <span class="input-group-text"><i class="fa fa-search"></i></span>
+            <input
+              v-model.trim="searchQuery"
+              class="form-control"
+              placeholder="Search supplier / phone / address…"
+            />
+          </div>
+
+          <!-- Per page -->
+          <select v-model.number="itemsPerPage" class="form-select form-select-sm w-auto">
+            <option :value="10">10 / page</option>
+            <option :value="25">25 / page</option>
+            <option :value="50">50 / page</option>
+            <option :value="100">100 / page</option>
+          </select>
+
+          <!-- Refresh -->
+          <button class="btn btn-sm btn-outline-primary" @click="refresh">
+            <i class="fa fa-rotate"></i>
+            <span class="ms-1">Refresh</span>
+          </button>
+
+          <!-- Add New -->
+          <button type="button" @click="openCreate" class="btn btn-primary btn-sm">
+            <i class="fa fa-plus me-2"></i>Add New
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Table -->
-    <div class="card" :class="{ p_loading: isLoading }">
+    <!-- Table Card -->
+    <div :class="{ p_loading: isLoading }" class="card">
       <div class="card-datatable text-nowrap">
         <div class="table-scroll">
           <table class="table table-hover align-middle mb-0 subcat-table">
-            <thead>
-              <tr style="background:#7367f0;">
-                <th style="width:80px">Sl</th>
-                <th>Supplier</th>
-                <th style="width:180px">Phone</th>
-                <th>Address</th>
-                <th style="width:180px" class="text-end">Action</th>
+            <thead class="table-head">
+              <tr>
+                <th style="width:70px">Sl</th>
+
+                <th class="sortable" @click="toggleSort('supplier')">
+                  <span class="d-inline-flex align-items-center">
+                    Supplier
+                    <i class="fa ms-1" :class="sortIcon('supplier')"></i>
+                  </span>
+                </th>
+
+                <th class="sortable" style="width:180px" @click="toggleSort('phone')">
+                  <span class="d-inline-flex align-items-center">
+                    Phone
+                    <i class="fa ms-1" :class="sortIcon('phone')"></i>
+                  </span>
+                </th>
+
+                <th class="sortable" @click="toggleSort('address')">
+                  <span class="d-inline-flex align-items-center">
+                    Address
+                    <i class="fa ms-1" :class="sortIcon('address')"></i>
+                  </span>
+                </th>
+
+                <th class="text-end" style="width:180px">Action</th>
               </tr>
             </thead>
 
             <tbody>
               <!-- Data rows -->
-              <tr v-for="(row, i) in safeRows" :key="row.id ?? `tmp-${i}`">
-                <td>{{ i + 1 }}</td>
-                <td>{{ (row.supplier || row.name) || '—' }}</td>
+              <tr v-for="(row, i) in paginatedRows" :key="row.id ?? `tmp-${i}`">
+                <td>{{ serialNumber(i) }}</td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="fw-medium">{{ displaySupplier(row) }}</span>
+                  </div>
+                </td>
                 <td>{{ row.phone || '—' }}</td>
                 <td>{{ row.address || '—' }}</td>
                 <td class="text-end">
@@ -42,13 +102,13 @@
               </tr>
 
               <!-- Empty state -->
-              <tr v-if="!isLoading && safeRows.length === 0">
+              <tr v-if="!isLoading && paginatedRows.length === 0">
                 <td colspan="5" class="text-center">
                   <span class="muted">No data</span>
                 </td>
               </tr>
 
-              <!-- (Optional) Loading skeleton rows -->
+              <!-- Loading skeleton rows -->
               <tr v-if="isLoading" v-for="n in 4" :key="'sk-'+n">
                 <td colspan="5" class="py-3">
                   <div class="skeleton-line"></div>
@@ -58,26 +118,64 @@
           </table>
         </div>
       </div>
+
+      <!-- Pagination -->
+      <div class="card-footer d-flex align-items-center justify-content-between">
+        <div class="text-muted small">
+          Showing {{ showingStart }}–{{ showingEnd }} of {{ filteredRows.length }} items
+          <span v-if="filteredRows.length !== safeRows.length" class="text-muted">
+            (filtered from {{ safeRows.length }} total)
+          </span>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <select v-model.number="itemsPerPage" class="form-select form-select-sm w-auto">
+            <option :value="10">10 / page</option>
+            <option :value="25">25 / page</option>
+            <option :value="50">50 / page</option>
+            <option :value="100">100 / page</option>
+          </select>
+
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary" :disabled="currentPage===1" @click="prevPage">
+              <i class="fa fa-chevron-left"></i>
+            </button>
+
+            <button
+              v-for="p in pageButtons"
+              :key="'p'+p"
+              class="btn"
+              :class="p === currentPage ? 'btn-primary' : 'btn-outline-secondary'"
+              @click="goToPage(p)"
+            >{{ p }}</button>
+
+            <button class="btn btn-outline-secondary" :disabled="currentPage===pageCount" @click="nextPage">
+              <i class="fa fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- /Pagination -->
     </div>
 
-    <!-- CREATE MODAL -->
+    <!-- ===== CREATE MODAL ===== -->
     <div v-if="createOpen" class="modal-backdrop" @click.self="closeCreate">
       <div class="modal-card" role="dialog" aria-modal="true">
         <div class="modal-header">
           <h5 class="m-0"><i class="fa fa-plus me-2"></i> Add Supplier</h5>
-          <button type="button" class="btn-close" @click="closeCreate"></button>
+          <button type="button" class="btn-close" @click="closeCreate" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="form-row">
-            <label class="form-label">সাপ্লায়ার নাম</label>
+            <label class="form-label">Supplier Name</label>
             <input v-model.trim="form.supplier" class="form-input" type="text" placeholder="e.g. ABC Medical" />
           </div>
           <div class="form-row">
-            <label class="form-label">মোবাইল নম্বর</label>
+            <label class="form-label">Phone Number</label>
             <input v-model.trim="form.phone" class="form-input" type="text" placeholder="e.g. 01xxxxxxxxx" />
           </div>
           <div class="form-row">
-            <label class="form-label">এড্রেস</label>
+            <label class="form-label">Address</label>
             <input v-model.trim="form.address" class="form-input" type="text" placeholder="e.g. Rangpur, Bangladesh" />
           </div>
         </div>
@@ -91,24 +189,24 @@
       </div>
     </div>
 
-    <!-- EDIT MODAL -->
+    <!-- ===== EDIT MODAL ===== -->
     <div v-if="editOpen" class="modal-backdrop" @click.self="closeEdit">
       <div class="modal-card" role="dialog" aria-modal="true">
         <div class="modal-header">
           <h5 class="m-0"><i class="fa fa-edit me-2"></i> Edit Supplier</h5>
-          <button type="button" class="btn-close" @click="closeEdit"></button>
+          <button type="button" class="btn-close" @click="closeEdit" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="form-row">
-            <label class="form-label">സাপ্লায়ার নাম</label>
+            <label class="form-label">Supplier Name</label>
             <input v-model.trim="editForm.supplier" class="form-input" type="text" />
           </div>
           <div class="form-row">
-            <label class="form-label">মোবাইল নম্বর</label>
+            <label class="form-label">Phone Number</label>
             <input v-model.trim="editForm.phone" class="form-input" type="text" />
           </div>
           <div class="form-row">
-            <label class="form-label">এড্রেস</label>
+            <label class="form-label">Address</label>
             <input v-model.trim="editForm.address" class="form-input" type="text" />
           </div>
         </div>
@@ -122,65 +220,63 @@
       </div>
     </div>
 
-    <!-- DELETE MODAL -->
+    <!-- ===== DELETE MODAL (improved) ===== -->
     <div v-if="deleteOpen" class="modal-backdrop" @click.self="closeDelete">
       <div class="modal-card" role="dialog" aria-modal="true">
         <div class="modal-header danger">
           <h5 class="m-0"><i class="fa fa-exclamation-triangle me-2"></i> Confirm Delete</h5>
-          <button type="button" class="btn-close" @click="closeDelete"></button>
+          <button type="button" class="btn-close" @click="closeDelete" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <p class="mb-2">
-            Are you sure you want to delete
-            <b>{{ (deleteRow && (deleteRow.supplier || deleteRow.name)) || 'this supplier' }}</b>?
+            You are about to delete
+            <b class="text-danger">{{ (deleteRow && (deleteRow.supplier || deleteRow.name)) || 'this supplier' }}</b>.
           </p>
-          <p class="muted">This action cannot be undone.</p>
+          <p class="muted mb-3">This action is permanent and cannot be undone.</p>
+
+          <div class="form-check">
+            <input
+              id="confirmDeleteCheck"
+              class="form-check-input"
+              type="checkbox"
+              v-model="confirmDeleteChecked"
+            />
+            <label class="form-check-label" for="confirmDeleteCheck">
+              I understand this will permanently delete the record.
+            </label>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-ghost" @click="closeDelete">Cancel</button>
-          <button class="btn btn-danger" :disabled="submitting" @click="doDelete">
+          <button
+            class="btn btn-danger"
+            :disabled="submitting || !confirmDeleteChecked"
+            @click="doDelete"
+            title="Delete"
+          >
             <i class="fa" :class="submitting ? 'fa-spinner fa-spin' : 'fa-trash'"></i>
             <span class="ms-2">{{ submitting ? 'Deleting…' : 'Delete' }}</span>
           </button>
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, getCurrentInstance, computed } from 'vue'
+import { ref, onMounted, getCurrentInstance, computed, watch } from 'vue'
 import { useToast } from 'vue-toastification'
 
 const { appContext } = getCurrentInstance()
 const http = appContext.config.globalProperties.$http
 const toast = useToast()
 
-const isLoading = ref(false)
-const submitting = ref(false)
-const suppliers = ref([])
+const isLoading   = ref(false)
+const submitting  = ref(false)
+const suppliers   = ref([])
 
-/* Computed safe rows: remove falsy/empty objects */
-const safeRows = computed(() => {
-  const arr = Array.isArray(suppliers.value) ? suppliers.value : []
-  return arr
-    .filter(r => r && typeof r === 'object')
-    .filter(r => (r.id != null) || r.supplier || r.name || r.phone || r.address)
-})
-
-const createOpen = ref(false)
-const form = ref({ supplier: '', phone: '', address: '' })
-
-const editOpen = ref(false)
-const editId = ref(null)
-const editForm = ref({ supplier: '', phone: '', address: '' })
-
-const deleteOpen = ref(false)
-const deleteRow = ref(null)
-
-function normalizeApiList(payload) {
-  // Handles: {data:[...]}, {list:[...]}, or direct array
+/* ===== List fetch & normalize ===== */
+function normalizeApiList (payload) {
   if (!payload) return []
   if (Array.isArray(payload)) return payload
   if (Array.isArray(payload.data)) return payload.data
@@ -191,9 +287,8 @@ function normalizeApiList(payload) {
 async function fetchSuppliers () {
   try {
     isLoading.value = true
-    const res = await http.get('/Supplier/create') 
+    const res = await http.get('/Supplier/create')
     suppliers.value = normalizeApiList(res?.data)
-    console.log(suppliers.value);
   } catch (e) {
     console.error(e)
     suppliers.value = []
@@ -203,7 +298,124 @@ async function fetchSuppliers () {
   }
 }
 
+function refresh () {
+  currentPage.value = 1
+  fetchSuppliers()
+}
+
+/* ===== Safe base rows ===== */
+const safeRows = computed(() => {
+  const arr = Array.isArray(suppliers.value) ? suppliers.value : []
+  return arr
+    .filter(r => r && typeof r === 'object')
+    .filter(r => (r.id != null) || r.supplier || r.name || r.phone || r.address)
+})
+
+/* ===== Search ===== */
+const searchQuery  = ref('')
+const filteredRows = computed(() => {
+  const q = searchQuery.value?.toLowerCase() || ''
+  if (!q) return safeRows.value
+  return safeRows.value.filter(r => {
+    const s = (r.supplier || r.name || '').toString().toLowerCase()
+    const p = (r.phone || '').toString().toLowerCase()
+    const a = (r.address || '').toString().toLowerCase()
+    return s.includes(q) || p.includes(q) || a.includes(q)
+  })
+})
+
+/* ===== Sorting ===== */
+const sortKey = ref('supplier')
+const sortDir = ref('asc') // 'asc' | 'desc'
+
+function baseValue (row, key) {
+  if (key === 'supplier') return (row.supplier || row.name || '').toString()
+  if (key === 'phone')    return (row.phone || '').toString()
+  if (key === 'address')  return (row.address || '').toString()
+  return (row[key] ?? '').toString()
+}
+
+const sortedRows = computed(() => {
+  const rows = [...filteredRows.value]
+  const k = sortKey.value
+  const d = sortDir.value
+  rows.sort((a, b) => {
+    const va = baseValue(a, k).toLowerCase()
+    const vb = baseValue(b, k).toLowerCase()
+    if (va < vb) return d === 'asc' ? -1 : 1
+    if (va > vb) return d === 'asc' ? 1 : -1
+    return 0
+  })
+  return rows
+})
+
+function toggleSort (key) {
+  if (sortKey.value === key) {
+    sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortKey.value = key
+    sortDir.value = 'asc'
+  }
+}
+
+function sortIcon (key) {
+  if (sortKey.value !== key) return 'fa-sort'
+  return sortDir.value === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
+}
+
+/* ===== Pagination ===== */
+const itemsPerPage = ref(10)
+const currentPage  = ref(1)
+
+watch([itemsPerPage, filteredRows], () => {
+  currentPage.value = 1
+})
+
+const pageCount = computed(() => {
+  const total = sortedRows.value.length
+  return Math.max(1, Math.ceil(total / itemsPerPage.value))
+})
+
+const paginatedRows = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  return sortedRows.value.slice(start, start + itemsPerPage.value)
+})
+
+function goToPage (p) {
+  if (p < 1 || p > pageCount.value) return
+  currentPage.value = p
+}
+function prevPage () { goToPage(currentPage.value - 1) }
+function nextPage () { goToPage(currentPage.value + 1) }
+
+const showingStart = computed(() => (sortedRows.value.length === 0 ? 0 : (currentPage.value - 1) * itemsPerPage.value + 1))
+const showingEnd   = computed(() => Math.min(currentPage.value * itemsPerPage.value, sortedRows.value.length))
+
+// Pagination buttons (1…N with window)
+const pageButtons = computed(() => {
+  const total = pageCount.value
+  const cur   = currentPage.value
+  const span  = 2 // current ±2
+  const start = Math.max(1, cur - span)
+  const end   = Math.min(total, cur + span)
+  const list  = []
+  for (let i = start; i <= end; i++) list.push(i)
+  if (!list.includes(1)) list.unshift(1)
+  if (!list.includes(total)) list.push(total)
+  return [...new Set(list)].sort((a,b)=>a-b)
+})
+
+/* ===== Helpers ===== */
+function displaySupplier (row) {
+  return (row.supplier || row.name) || '—'
+}
+function serialNumber (indexOnPage) {
+  return (currentPage.value - 1) * itemsPerPage.value + indexOnPage + 1
+}
+
 /* ===== CREATE ===== */
+const createOpen = ref(false)
+const form = ref({ supplier: '', phone: '', address: '' })
 function openCreate(){ createOpen.value = true }
 function closeCreate(){ createOpen.value = false; form.value = { supplier:'', phone:'', address:'' } }
 
@@ -228,6 +440,10 @@ async function createSupplier(){
 }
 
 /* ===== EDIT ===== */
+const editOpen = ref(false)
+const editId   = ref(null)
+const editForm = ref({ supplier: '', phone: '', address: '' })
+
 function openEdit(row){
   editId.value = row?.id
   editForm.value = {
@@ -244,11 +460,11 @@ async function updateSupplier(){
   if(!editForm.value.supplier?.trim()){ toast.error('Supplier name is required'); return }
   try{
     submitting.value = true
- await http.put(`/Supplier/${editId.value}`, {
-  supplier: editForm.value.supplier,
-  phone: editForm.value.phone || null,
-  address: editForm.value.address || null
-})
+    await http.put(`/Supplier/${editId.value}`, {
+      supplier: editForm.value.supplier,
+      phone: editForm.value.phone || null,
+      address: editForm.value.address || null
+    })
     toast.success('Updated successfully')
     closeEdit()
     await fetchSuppliers()
@@ -261,8 +477,20 @@ async function updateSupplier(){
 }
 
 /* ===== DELETE ===== */
-function openDelete(row){ deleteRow.value = row; deleteOpen.value = true }
-function closeDelete(){ deleteOpen.value = false; deleteRow.value = null }
+const deleteOpen = ref(false)
+const deleteRow  = ref(null)
+const confirmDeleteChecked = ref(false)
+
+function openDelete(row){
+  deleteRow.value = row
+  confirmDeleteChecked.value = false
+  deleteOpen.value = true
+}
+function closeDelete(){
+  deleteOpen.value = false
+  deleteRow.value = null
+  confirmDeleteChecked.value = false
+}
 
 async function doDelete(){
   if(!(deleteRow.value && deleteRow.value.id)) return
@@ -288,17 +516,10 @@ onMounted(fetchSuppliers)
 .p_create-btn{ background:#7367f0; border:none; box-shadow:0 6px 14px rgba(115,103,240,.3); color:#fff; }
 .p_create-btn:hover{ filter:brightness(1.05); transform:translateY(-1px); }
 
-/* Loading lock */
 .p_loading{ opacity:.6; pointer-events:none; }
-
-/* Table */
-.table-scroll{ max-height:65vh; overflow-y:auto; border-radius:.5rem; border:1px solid rgba(0,0,0,.08); }
-.table th{ text-transform:uppercase; font-size:.8125rem; letter-spacing:.2px; color:#fff; }
-
-/* Skeleton */
 .skeleton-line{
   height:10px; width:100%; background:linear-gradient(90deg,#eee,#f7f7f7,#eee);
-  border-radius:6px; animation:pulse 1.2s infinite; 
+  border-radius:6px; animation:pulse 1.2s infinite;
 }
 @keyframes pulse{ 0%{opacity:.6} 50%{opacity:1} 100%{opacity:.6} }
 
@@ -327,5 +548,20 @@ onMounted(fetchSuppliers)
 .btn-danger:hover{ filter:brightness(1.05); transform:translateY(-1px); }
 .btn-close{ border:none; background:transparent; font-size:1.25rem; line-height:1; color:#64748b; border-radius:10px; padding:6px; }
 .btn-close:hover{ background:#eef2ff; color:#3730a3; }
+
 .muted{ color:#94a3b8; font-size:.9rem; }
+.table-scroll { overflow-x: auto; max-width: 100%; }
+.table thead th { color: #fff; position: sticky; top: 0; z-index: 1; }
+.table-head { background: #7367f0; color: #fff; }
+.sortable { cursor: pointer; user-select: none; }
+.input-group .form-control { min-width: 260px; }
+.badge { font-weight: 600; }
+.subcat-table tfoot th { background: #f5f6f8; }
+
+/* Simple checkbox styling if Bootstrap form-check unavailable */
+.form-check{ display:flex; align-items:center; gap:.5rem; }
+.form-check-input{ width:1rem; height:1rem; }
+.form-check-label{ user-select:none; }
+
+.text-danger{ color:#ef4444; }
 </style>

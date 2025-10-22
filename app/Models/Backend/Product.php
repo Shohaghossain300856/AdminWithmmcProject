@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Backend\Catagory;
 use App\Models\Backend\Fund;
 use App\Models\Backend\Subcategorie;
-use App\Models\Country;
 use App\Models\Stock;
 
 class Product extends Model
@@ -36,7 +35,7 @@ class Product extends Model
 
 public function country()
 {
-    return $this->belongsTo(\App\Models\Country::class, 'country_id');
+    return $this->belongsTo(\App\Models\Country::class);
 }
 
 public function category()

@@ -34,5 +34,7 @@ class StockPurchase extends Model
     {
         return $this->belongsTo(Fund::class);
     }
+
+
  
 }

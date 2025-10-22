@@ -29,7 +29,8 @@ public function create()
     {
       
         $request->validate([
-            'fund' => 'required|string|max:255',
+      'fund' => 'required|string|max:255|unique:funds,fund',
+
         ]);
 
         $fund = Fund::create([
