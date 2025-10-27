@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Backend\Subcategorie;
 use App\Models\Backend\Catagory;
 use App\Models\Backend\Fund;
+use App\Models\Backend\Product;
+use App\Models\PreorderItem;
+use App\Models\Preorder;
 use Illuminate\Support\Facades\DB;
 
 class PdfController extends Controller
@@ -13,31 +16,30 @@ class PdfController extends Controller
 
 public function Subcategoriespdf()
 {
-    // 🔹 সব সাব-ক্যাটেগরির রেকর্ড লোড করি (সাথে ফান্ড ও ক্যাটেগরি সম্পর্ক)
     $rows = Subcategorie::with([
         'fund:id,fund',
         'category:id,fund_id,code,name'
     ])
-    ->orderBy('categorie_id') // ক্যাটেগরি অনুযায়ী সাজাই
-    ->orderBy('sn')           // আপনার সিরিয়াল/অর্ডার কলাম
+    ->orderBy('categorie_id') 
+    ->orderBy('sn')           
     ->get();
 
-    // 🔹 ক্যাটেগরি-আইডি দিয়ে গ্রুপ করে ক্যাটেগরি-ভিত্তিক ট্রি বানাই
+  
     $tree = $rows->groupBy('categorie_id')->map(function ($byCat, $catId) {
-        $first = $byCat->first(); // এই গ্রুপের প্রথম রেকর্ড (ক্যাটেগরির নাম/কোড নেয়ার জন্য)
+        $first = $byCat->first();
 
-        // 🔹 আইটেমগুলো (প্রতিটি সাব-ক্যাটেগরির এন্ট্রি)
+       
         $items = $byCat->map(function ($m) {
             return [
                 'id'              => $m->id,
                 'memo_no'         => $m->memo_no,
                 'date'            => $m->date,
                 'fund_id'         => $m->fund_id,
-                'code'            => $m->code,          // সাব-ক্যাটেগরির কোড
-                'sub_category'    => $m->sub_category,  // সাব-ক্যাটেগরির নাম
+                'code'            => $m->code,          
+                'sub_category'    => $m->sub_category, 
                 'categorie_id'    => $m->categorie_id,
 
-                // নিচের ফিল্ডগুলো সংখ্যাসূচক; ক্যালকুলেশন সহজ করতে float কাস্ট করলাম
+              
                 'total_budget'    => (float) $m->total_budget,
                 'total_pending'   => (float) $m->total_pending,
                 'total_balance'   => (float) $m->total_balance,
@@ -52,7 +54,6 @@ public function Subcategoriespdf()
                 'balance'         => (float) $m->balance,
                 'rate'            => (float) $m->rate,
 
-                // রিলেশনাল তথ্য (ফান্ড/ক্যাটেগরি)
                 'fund'            => [
                     'id'   => $m->fund->id ?? $m->fund_id,
                     'fund' => $m->fund->fund ?? null,
@@ -65,8 +66,6 @@ public function Subcategoriespdf()
                 ],
             ];
         })->values();
-
-        // 🔹 এই ক্যাটেগরির উপমোট/সামগুলো আগে থেকেই বের করে রাখি (Blade-এ কাজ সহজ হবে)
         $sums = [
             'budget'          => $byCat->sum('budget'),
             'revised'         => $byCat->sum('revised'),
@@ -76,21 +75,45 @@ public function Subcategoriespdf()
             'expense_pending' => $byCat->sum('expense_pending'),
             'actual_expense'  => $byCat->sum('actual_expense'),
             'balance'         => $byCat->sum('balance'),
-            'rate_avg'        => (float) ($byCat->avg('rate') ?? 0), // রেট গড় হিসেবে
+            'rate_avg'        => (float) ($byCat->avg('rate') ?? 0), 
         ];
 
         return [
             'category_id'   => (int) $catId,
             'category_code' => $first->category->code ?? '',
             'category_name' => $first->category->name ?? '',
-            'items'         => $items->all(), // এই ক্যাটেগরির সব সাব-ক্যাটেগরি-রো
-            'sums'          => $sums,         // এই ক্যাটেগরির উপমোট
+            'items'         => $items->all(), 
+            'sums'          => $sums,         
         ];
     })->values();
-
-    // 🔹 Category-first ট্রি Blade-এ পাঠাই
     return view('Pdf.SubCatagoriesPDF', compact('tree'));
 }
+
+
+public function preorderpdf($preOrder)
+{
+    $preorder = Preorder::with('fund', 'supplier')->findOrFail($preOrder);
+
+    $items = PreorderItem::with([
+        'product.category',
+        'product.subcategory',
+        'product.country'
+    ])->where('preorder_id', $preOrder)->get();
+    
+  // return response()->json([
+  //       'status' => true,
+  //       'message' => 'Fetch data successfully',
+  //       'preorder' => $preorder,
+  //       'items' => $items,
+  //   ]);
+
+
+    return view('Pdf.pre-order', compact('preorder', 'items'));
+}
+
+
+
+
 
 
 }

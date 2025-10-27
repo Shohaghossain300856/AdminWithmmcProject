@@ -9,6 +9,7 @@ import productlist from "./components/Backend/Product/index.vue";
 import stockcreate from "./components/Backend/Stock/create.vue";
 import stocklist from "./components/Backend/Stock/StockList.vue";
 import stockreports from "./components/Backend/Reports/stockReports.vue";
+import preorder from "./components/Backend/PreOrder/PreOrder.vue";
 import http from "./lib/http";
 
 // loader
@@ -37,6 +38,7 @@ app.component("supplier", supplier);
 app.component("productlist", productlist);
 app.component("stocklist", stocklist);
 app.component("stockreports", stockreports);
+app.component("preorder", preorder);
 
 app.use(Toast, {
   position: "top-right",

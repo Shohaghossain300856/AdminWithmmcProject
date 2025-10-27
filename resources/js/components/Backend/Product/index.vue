@@ -4,11 +4,11 @@
     <div class="card mb-3">
       <div class="card-body d-flex align-items-center gap-2 flex-wrap">
         <h5 class="mb-0 d-flex align-items-center gap-2">
-          <i class="fa fa-boxes-stacked me-2"></i> Item Page
+          <i class="fa fa-boxes-stacked me-2"></i> Product List
         </h5>
 
         <!-- Count -->
-        <span class="badge bg-primary ms-2">{{ products.length }} Items</span>
+        <span class="badge bg-primary ms-2">{{ products.length }} Product</span>
 
         <!-- Right controls (visual only: search/per-page) -->
         <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
@@ -29,7 +29,7 @@
           </button>
 
           <button class="btn btn-primary btn-sm" @click="openCreate">
-            <i class="fa fa-plus me-2"></i> Add Item
+            <i class="fa fa-plus me-2"></i> Add Product
           </button>
         </div>
       </div>
@@ -80,7 +80,7 @@
         <!-- Pagination footer (visual match; logic untouched) -->
         <div class="card-footer d-flex align-items-center justify-content-between" v-if="products.length">
           <div class="text-muted small">
-            Showing 1–{{ products.length }} of {{ products.length }} items
+            Showing 1–{{ products.length }} of {{ products.length }} Product
           </div>
           <div class="d-flex align-items-center gap-2">
             <select class="form-select form-select-sm w-auto">
@@ -107,7 +107,7 @@
     <div v-if="createOpen" class="modal-backdrop" @click.self="closeCreate">
       <div class="modal-card" role="dialog" aria-modal="true">
         <div class="modal-header">
-          <h5 class="m-0"><i class="fa fa-plus me-2"></i> New item</h5>
+          <h5 class="m-0"><i class="fa fa-plus me-2"></i> New Product</h5>
           <button type="button" class="btn-close" @click="closeCreate"></button>
         </div>
         <div class="modal-body">
@@ -196,7 +196,7 @@
     <div v-if="editOpen" class="modal-backdrop" @click.self="closeEdit">
       <div class="modal-card" role="dialog" aria-modal="true">
         <div class="modal-header">
-          <h5 class="m-0"><i class="fa fa-edit me-2"></i> Edit item</h5>
+          <h5 class="m-0"><i class="fa fa-edit me-2"></i> Edit Product</h5>
           <button type="button" class="btn-close" @click="closeEdit"></button>
         </div>
         <div class="modal-body">

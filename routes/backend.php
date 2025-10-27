@@ -15,6 +15,7 @@ use App\Http\Controllers\Backend\SupplierController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\StockListController;
 use App\Http\Controllers\Backend\CountryController;
+use App\Http\Controllers\PreOrderController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\StockReportController;
 use Illuminate\Support\Facades\Auth;
@@ -81,8 +82,12 @@ Route::middleware(['auth','checkUserStatus'])->group(function () {
       Route::resource('product', ProductController::class);
       Route::resource('stock-reports', StockReportController::class);
 
+      Route::resource('pre-order', PreOrderController::class);
+
 
 Route::get('/subcategoriespdf', [PdfController::class, 'Subcategoriespdf'])->name('subcategoriespdf');
+Route::get('/preorder-pdf/{preOrder}', [PdfController::class, 'preorderpdf'])->name('preorder.pdf');
+
 Route::get('/country-get', [CountryController::class, 'create'])->name('country-get');
 
 

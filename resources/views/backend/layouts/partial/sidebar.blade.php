@@ -145,6 +145,31 @@
 @endcanany
 
 
+@canany(['Pre order management'])
+  <li class="menu-item 
+  {{ Route::currentRouteNamed('pre-order.index') ? 'active open' : '' }}">
+  
+  <a href="javascript:void(0);" class="menu-link menu-toggle">
+    <i class="menu-icon tf-icons ti ti-users"></i>
+    <div data-i18n="Fund Management">Pre Order</div>
+  </a>
+
+  <ul class="menu-sub">
+
+    @can('Pre-Order')
+    <li class="menu-item {{ Route::currentRouteNamed('pre-order.index') ? 'active' : '' }}">
+      <a href="{{ route('pre-order.index') }}" class="menu-link">
+        <i class="menu-icon tf-icons ti ti-smart-home"></i>
+        <div data-i18n="Pre Order">Pre Order</div>
+      </a>
+    </li>
+    @endcan  
+
+  </ul>
+</li>
+@endcanany
+
+
 
 {{-- User Management --}}
 @canany(['user-index','user-create','user-edit','user-delete'])
